@@ -1,0 +1,146 @@
+﻿using FluentValidation;
+using Hospital.Application.DTOs.Doctor;
+using Hospital.Application.Services.Interfaces;
+using Hospital.Domain.Entities;
+using Hospital.Domain.Repositories.Interfaces;
+using Microsoft.AspNetCore.Identity;
+
+namespace Hospital.Application.Services.Implementations
+{
+    public class DoctorService : IDoctorService
+    {
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IValidator<CreateDoctorDto> _createDoctorValidator;
+        private readonly IValidator<UpdateDoctorDto> _updateDoctorValidator;
+        private readonly UserManager<AppUser> _userManager;
+
+        public DoctorService(IUnitOfWork unitOfWork, IValidator<CreateDoctorDto> createDoctorValidator, UserManager<AppUser> userManager = null, IValidator<UpdateDoctorDto> updateDoctorValidator = null)
+        {
+            _unitOfWork = unitOfWork;
+            _createDoctorValidator = createDoctorValidator;
+            _userManager = userManager;
+            _updateDoctorValidator = updateDoctorValidator;
+        }
+
+        public async Task CreateDoctor(CreateDoctorDto model)
+        {
+            var result = _createDoctorValidator.Validate(model);
+
+            if (!result.IsValid)
+                throw new Exception(result.ToString(","));
+
+            var user = new AppUser
+            {
+                UserName = model.Email,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Email = model.Email,
+                Gender = model.Gender,
+                DateOfBirth = model.DateOfBirth,
+                PhoneNumber = model.PhoneNumber,
+                Address = model.Address,
+                EmailConfirmed = true
+            };
+
+            var creationResult = await _userManager.CreateAsync(user, model.Password);
+
+            if (!creationResult.Succeeded)
+                throw new Exception(string.Join(",", creationResult.Errors.Select(e => e.Description)));
+
+            var roleResult = await _userManager.AddToRoleAsync(user, "Doctor");
+
+            if (!roleResult.Succeeded)
+                throw new Exception(string.Join(",", roleResult.Errors.Select(e => e.Description)));
+
+            var doctor = new Doctor
+            {
+                UserId = user.Id,
+                ExperienceYears = model.ExperienceYears,
+                ConsultationFee = model.ConsultationFee,
+                SpecializationId = model.SpecializationId,
+                Biography = ""
+            };
+
+            await _unitOfWork.Doctors.AddAsync(doctor);
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task DeleteDoctor(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+
+            if (user == null)
+                throw new Exception("Doctor not found!");
+
+            await _userManager.DeleteAsync(user);
+        }
+
+        public async Task<List<GetAllDoctorsDto>> GetAllDoctors(int pageNumber = 1)
+        {
+            var doctors = await _unitOfWork.Doctors
+                .GetAllAsync(
+                filter: d => true,
+                selector: d => new GetAllDoctorsDto
+                {
+                    Id = d.UserId,
+                    FirstName = d.AppUser.FirstName,
+                    LastName = d.AppUser.LastName,
+                    ExperienceYears = d.ExperienceYears,
+                    Gender = d.AppUser.Gender
+                },
+                pageNumber: pageNumber,
+                pageSize: 20
+                );
+
+            return doctors;
+        }
+
+        public async Task<GetDoctorDto> GetDoctor(string id)
+        {
+            var doctor = await _unitOfWork.Doctors
+                .GetAsync(
+                filter: d => d.UserId == id,
+                selector: d => new GetDoctorDto
+                {
+                    Id = d.UserId,
+                    FirstName = d.AppUser.FirstName,
+                    LastName = d.AppUser.LastName,
+                    ExperienceYears = d.ExperienceYears,
+                    Biography = d.Biography,
+                    ConsultationFee = d.ConsultationFee,
+                    DateOfBirth = d.AppUser.DateOfBirth,
+                    Gender = d.AppUser.Gender,
+                    SpecializationName = d.specialization.Name
+                });
+
+            return doctor;
+        }
+
+        public async Task UpdateDoctor(string id, UpdateDoctorDto model)
+        {
+            var result = _updateDoctorValidator.Validate(model);
+
+            if (!result.IsValid)
+                throw new Exception(result.ToString(","));
+
+            var doctor = await _unitOfWork.Doctors
+                .GetAsync(
+                filter: d => d.UserId == id
+                );
+
+            var user = await _userManager.FindByIdAsync(id);
+
+            user.FirstName = model.FirstName;
+            user.LastName = model.LastName;
+            user.PhoneNumber = model.PhoneNumber;
+            user.Gender = model.Gender;
+            user.DateOfBirth = model.DateOfBirth;
+            doctor.ExperienceYears = model.ExperienceYears;
+            doctor.ConsultationFee = model.ConsultationFee;
+            doctor.SpecializationId = model.SpecializationId;
+
+            await _userManager.UpdateAsync(user);
+            await _unitOfWork.SaveChangesAsync();
+        }
+    }
+}
