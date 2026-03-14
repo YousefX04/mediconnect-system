@@ -48,6 +48,7 @@ namespace Hospital.Application.DependencyInjection
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ISpecializationService, SpecializationService>();
             services.AddScoped<IDoctorService, DoctorService>();
+            services.AddScoped<IProfileService, ProfileService>();
             #endregion
 
             #region FluentValidation

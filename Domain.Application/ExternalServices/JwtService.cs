@@ -21,7 +21,7 @@ namespace Hospital.Application.ExternalServices
         {
             var claims = new[]
             {
-                new Claim("UserId", user.Id),
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim(ClaimTypes.Role, user.Role),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())

@@ -32,15 +32,9 @@ namespace Hospital.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetDoctor(string id)
         {
-            try
-            {
-                var doctor = await _doctorService.GetDoctor(id);
-                return Ok(doctor);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { errors = ex.Message });
-            }
+            var doctor = await _doctorService.GetDoctor(id);
+
+            return Ok(doctor);
         }
 
         [HttpPost]
