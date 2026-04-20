@@ -3,6 +3,7 @@ using Hospital.Application.ExternalServices;
 using Hospital.Application.Services.Implementations;
 using Hospital.Application.Services.Interfaces;
 using Hospital.Application.Validators.Authentication;
+using Hospital.Domain.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -49,6 +50,8 @@ namespace Hospital.Application.DependencyInjection
             services.AddScoped<ISpecializationService, SpecializationService>();
             services.AddScoped<IDoctorService, DoctorService>();
             services.AddScoped<IProfileService, ProfileService>();
+            services.AddScoped<IDoctorScheduleService, DoctorScheduleService>();
+            services.AddScoped<IAppointmentService, AppointmentService>();
             #endregion
 
             #region FluentValidation

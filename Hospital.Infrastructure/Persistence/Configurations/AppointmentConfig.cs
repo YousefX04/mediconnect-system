@@ -23,8 +23,9 @@ namespace Hospital.Infrastructure.Persistence.Configurations
             builder.Property(a => a.AppointmentDate)
                    .IsRequired();
 
-            builder.Property(a => a.CreatedAt)
-                   .HasDefaultValueSql("GETDATE()");
+            builder.Property(ds => ds.DayOfWeek)
+                   .IsRequired()
+                   .HasConversion<string>();
 
             builder.Property(a => a.StartTime)
                    .IsRequired();

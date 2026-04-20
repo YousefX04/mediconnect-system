@@ -16,11 +16,11 @@ namespace Hospital.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllDoctors(int pageNumber = 1)
+        public async Task<IActionResult> GetAllDoctors(string? specializationName = null, int pageNumber = 1)
         {
             try
             {
-                var doctors = await _doctorService.GetAllDoctors(pageNumber);
+                var doctors = await _doctorService.GetAllDoctors(specializationName, pageNumber);
                 return Ok(doctors);
             }
             catch (Exception ex)
@@ -29,10 +29,10 @@ namespace Hospital.API.Controllers
             }
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetDoctor(string id)
+        [HttpGet("{doctorId}/{patientId}")]
+        public async Task<IActionResult> GetDoctor(string doctorId,string patientId)
         {
-            var doctor = await _doctorService.GetDoctor(id);
+            var doctor = await _doctorService.GetDoctor(doctorId, patientId);
 
             return Ok(doctor);
         }

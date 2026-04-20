@@ -9,6 +9,7 @@
         public decimal ExperienceYears { get; set; }
         public string Biography { get; set; }
         public decimal ConsultationFee { get; set; }
+        public bool IsActive { get; set; }
         public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
         public ICollection<DoctorSchedule> Schedules { get; set; } = new List<DoctorSchedule>();
         public ICollection<MedicalRecord> MedicalRecords { get; set; } = new List<MedicalRecord>();

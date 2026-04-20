@@ -30,6 +30,9 @@ namespace Hospital.Infrastructure.Persistence.Configurations
             builder.Property(d => d.ConsultationFee)
                    .HasColumnType("decimal(18,2)")
                    .IsRequired();
+
+            builder.Property(d => d.IsActive)
+                   .HasDefaultValue(false);
         }
     }
 }

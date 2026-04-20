@@ -1,4 +1,6 @@
-﻿namespace Hospital.Application.DTOs.Doctor
+﻿using Hospital.Application.DTOs.DoctorSchedule;
+
+namespace Hospital.Application.DTOs.Doctor
 {
     public class GetDoctorDto
     {
@@ -11,5 +13,8 @@
         public decimal ConsultationFee { get; set; }
         public DateOnly DateOfBirth { get; set; }
         public string Gender { get; set; }
+        public bool IsAppleToAppointment { get; set; }
+        public List<GetDoctorScheduleDto> DoctorSchedules { get; set; } = new List<GetDoctorScheduleDto>();
+
     }
 }

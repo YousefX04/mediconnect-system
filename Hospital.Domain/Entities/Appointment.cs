@@ -10,10 +10,10 @@ namespace Hospital.Domain.Entities
         public Doctor Doctor { get; set; }
         public string DoctorId { get; set; }
         public DateOnly AppointmentDate { get; set; }
+        public DayOfWeek DayOfWeek { get; set; }
         public TimeOnly StartTime { get; set; }
         public TimeOnly EndTime { get; set; }
         public Status Status { get; set; }
-        public DateTime CreatedAt { get; set; }
         public Payment Payment { get; set; }
     }
 }

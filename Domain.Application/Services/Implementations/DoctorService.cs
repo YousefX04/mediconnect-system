@@ -1,7 +1,9 @@
 ﻿using FluentValidation;
 using Hospital.Application.DTOs.Doctor;
+using Hospital.Application.DTOs.DoctorSchedule;
 using Hospital.Application.Services.Interfaces;
 using Hospital.Domain.Entities;
+using Hospital.Domain.Enums;
 using Hospital.Domain.Repositories.Interfaces;
 using Microsoft.AspNetCore.Identity;
 
@@ -75,11 +77,11 @@ namespace Hospital.Application.Services.Implementations
             await _userManager.DeleteAsync(user);
         }
 
-        public async Task<List<GetAllDoctorsDto>> GetAllDoctors(int pageNumber = 1)
+        public async Task<List<GetAllDoctorsDto>> GetAllDoctors(string? specializationName = null, int pageNumber = 1)
         {
             var doctors = await _unitOfWork.Doctors
                 .GetAllAsync(
-                filter: d => true,
+                filter: d => string.IsNullOrEmpty(specializationName) || d.specialization.Name == specializationName,
                 selector: d => new GetAllDoctorsDto
                 {
                     Id = d.UserId,
@@ -95,11 +97,11 @@ namespace Hospital.Application.Services.Implementations
             return doctors;
         }
 
-        public async Task<GetDoctorDto> GetDoctor(string id)
+        public async Task<GetDoctorDto> GetDoctor(string doctorId,string patientid)
         {
             var doctor = await _unitOfWork.Doctors
                 .GetAsync(
-                filter: d => d.UserId == id,
+                filter: d => d.UserId == doctorId,
                 selector: d => new GetDoctorDto
                 {
                     Id = d.UserId,
@@ -110,7 +112,15 @@ namespace Hospital.Application.Services.Implementations
                     ConsultationFee = d.ConsultationFee,
                     DateOfBirth = d.AppUser.DateOfBirth,
                     Gender = d.AppUser.Gender,
-                    SpecializationName = d.specialization.Name
+                    SpecializationName = d.specialization.Name,
+                    IsAppleToAppointment = !d.Appointments.Any(a => a.PatientId == patientid && a.Status == Status.Pending),
+                    DoctorSchedules = d.Schedules.Select(ds => new GetDoctorScheduleDto
+                    {
+                        DayOfWeek = ds.DayOfWeek.ToString(),
+                        StartTime = ds.StartTime,
+                        EndTime = ds.EndTime,
+                        IsAvailable = ds.Doctor.Appointments.Count(a => a.DayOfWeek == ds.DayOfWeek && a.Status == Status.Pending) < 16
+                    }).ToList()
                 });
 
             return doctor;
