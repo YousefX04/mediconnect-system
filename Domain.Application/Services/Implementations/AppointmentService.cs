@@ -100,7 +100,11 @@ namespace Hospital.Application.Services.Implementations
                     Status = x.Status.ToString()
                 });
 
-            return appointments;
+            var sortedAppointments = appointments.OrderBy(a => a.AppointmentDate)
+                                             .ThenBy(a => a.StartTime)
+                                             .ToList();
+
+            return sortedAppointments;
         }
     }
 }
