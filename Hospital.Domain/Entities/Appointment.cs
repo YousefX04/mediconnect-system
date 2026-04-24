@@ -13,6 +13,7 @@ namespace Hospital.Domain.Entities
         public DayOfWeek DayOfWeek { get; set; }
         public TimeOnly StartTime { get; set; }
         public TimeOnly EndTime { get; set; }
+        public int QueueNumber { get; set; }
         public Status Status { get; set; }
         public Payment Payment { get; set; }
     }

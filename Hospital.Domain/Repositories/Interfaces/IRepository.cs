@@ -19,5 +19,6 @@ namespace Hospital.Domain.Repositories.Interfaces
         Task<int> CountAsync();
         Task<int> CountAsync(Expression<Func<T, bool>> filter);
         Task DeleteWhereAsync(Expression<Func<T, bool>> filter);
+        Task<int> GetLastQueueNumberAsync(string doctorId, DateTime date);
     }
 }

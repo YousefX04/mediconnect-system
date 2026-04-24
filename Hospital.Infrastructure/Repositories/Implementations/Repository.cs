@@ -1,4 +1,5 @@
-﻿using Hospital.Domain.Repositories.Interfaces;
+﻿using Hospital.Domain.Entities;
+using Hospital.Domain.Repositories.Interfaces;
 using Hospital.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
@@ -119,6 +120,13 @@ namespace Hospital.Infrastructure.Repositories.Implementations
         public async Task Update(T entity)
         {
             _dbSet.Update(entity);
+        }
+
+        public async Task<int> GetLastQueueNumberAsync(string doctorId, DateTime date)
+        {
+            return await _db.Appointments
+                .Where(a => a.DoctorId == doctorId && a.AppointmentDate == DateOnly.FromDateTime(date))
+                .MaxAsync(a => (int?)a.QueueNumber) ?? 0;
         }
     }
 }

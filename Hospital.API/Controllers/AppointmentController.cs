@@ -57,5 +57,33 @@ namespace Hospital.API.Controllers
                 return BadRequest(new { errors = ex.Message });
             }
         }
+
+        [HttpPut("complete")]
+        public async Task<IActionResult> CompleteAppointmentStatus(string appointmentId)
+        {
+            try
+            {
+                await _appointmentService.CompleteAppointmentStatus(appointmentId);
+                return Ok("Appointment status updated to completed successfully.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { errors = ex.Message });
+            }
+        }
+
+        [HttpPut("cancel")]
+        public async Task<IActionResult> CancelAppointmentStatus(string appointmentId)
+        {
+            try
+            {
+                await _appointmentService.CancelAppointmentStatus(appointmentId);
+                return Ok("Appointment status updated to cancelled successfully.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { errors = ex.Message });
+            }
+        }
     }
 }

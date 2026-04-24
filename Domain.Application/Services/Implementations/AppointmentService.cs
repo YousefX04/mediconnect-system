@@ -4,6 +4,7 @@ using Hospital.Application.Services.Interfaces;
 using Hospital.Domain.Entities;
 using Hospital.Domain.Enums;
 using Hospital.Domain.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -42,12 +43,16 @@ namespace Hospital.Application.Services.Implementations
                 filter: x => x.DoctorId == model.DoctorId && x.DayOfWeek == dayOfWeek && x.Status != Status.Completed
                 );
 
+            var lastQueueNumber = await _unitOfWork.Appointments
+                .GetLastQueueNumberAsync(model.DoctorId, DateTime.Now);
+
             var appointment = new Appointment()
             {
                 DoctorId = model.DoctorId,
                 PatientId = model.PatientId,
                 AppointmentDate = DateOnly.FromDateTime(DateTime.Now),
                 DayOfWeek = dayOfWeek,
+                QueueNumber = lastQueueNumber + 1,
                 Status = Status.Pending
             };
 
@@ -79,10 +84,15 @@ namespace Hospital.Application.Services.Implementations
                     DayOfWeek = x.DayOfWeek.ToString(),
                     StartTime = x.StartTime,
                     EndTime = x.EndTime,
+                    QueueNumber = x.QueueNumber,
                     Status = x.Status.ToString()
                 });
 
-            return appointments;
+            var sortedAppointments = appointments.OrderBy(a => a.AppointmentDate)
+                                                .ThenBy(a => a.StartTime)
+                                                .ToList();
+
+            return sortedAppointments;
         }
 
         public async Task<List<GetPatientAppointmentsDto>> GetPatientAppointments(string patientId)
@@ -97,6 +107,7 @@ namespace Hospital.Application.Services.Implementations
                     DayOfWeek = x.DayOfWeek.ToString(),
                     StartTime = x.StartTime,
                     EndTime = x.EndTime,
+                    QueueNumber = x.QueueNumber,
                     Status = x.Status.ToString()
                 });
 
@@ -105,6 +116,38 @@ namespace Hospital.Application.Services.Implementations
                                              .ToList();
 
             return sortedAppointments;
+        }
+
+        public async Task CompleteAppointmentStatus(string appointmentId)
+        {
+            var appointment = await _unitOfWork.Appointments.GetAsync(x => x.AppointmentId.ToString() == appointmentId);
+
+            if (appointment == null)
+                throw new Exception("Appointment Not Found");
+
+            if(appointment.Status == Status.Completed)
+                throw new Exception("Appointment is already completed");
+
+            appointment.Status = Status.Completed;
+
+            await _unitOfWork.Appointments.Update(appointment);
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task CancelAppointmentStatus(string appointmentId)
+        {
+            var appointment = await _unitOfWork.Appointments.GetAsync(x => x.AppointmentId.ToString() == appointmentId);
+
+            if (appointment == null)
+                throw new Exception("Appointment Not Found");
+
+            if (appointment.Status == Status.Cancelled)
+                throw new Exception("Appointment is already cancelled");
+
+            appointment.Status = Status.Cancelled;
+
+            await _unitOfWork.Appointments.Update(appointment);
+            await _unitOfWork.SaveChangesAsync();
         }
     }
 }

@@ -12,6 +12,7 @@ namespace Hospital.Application.DTOs.Appointment
         public string DayOfWeek { get; set; }
         public TimeOnly StartTime { get; set; }
         public TimeOnly EndTime { get; set; }
+        public int QueueNumber { get; set; }
         public string Status { get; set; }
 
     }
