@@ -51,6 +51,13 @@ namespace Hospital.API.Controllers
             }
         }
 
+        [HttpPost("{doctorId}/upload-profile-picture")]
+        public async Task<IActionResult> UploadProfilePicture(string doctorId, [FromForm] UploadDoctorImageDto model)
+        {
+            var result = await _doctorService.UploadProfilePictureAsync(doctorId, model.File);
+            return Ok(result);
+        }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateDoctor(string id, UpdateDoctorDto model)
         {

@@ -5,6 +5,8 @@ using Hospital.Application.Services.Interfaces;
 using Hospital.Domain.Entities;
 using Hospital.Domain.Enums;
 using Hospital.Domain.Repositories.Interfaces;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 
 namespace Hospital.Application.Services.Implementations
@@ -15,13 +17,15 @@ namespace Hospital.Application.Services.Implementations
         private readonly IValidator<CreateDoctorDto> _createDoctorValidator;
         private readonly IValidator<UpdateDoctorDto> _updateDoctorValidator;
         private readonly UserManager<AppUser> _userManager;
+        private readonly IWebHostEnvironment _env;
 
-        public DoctorService(IUnitOfWork unitOfWork, IValidator<CreateDoctorDto> createDoctorValidator, UserManager<AppUser> userManager = null, IValidator<UpdateDoctorDto> updateDoctorValidator = null)
+        public DoctorService(IUnitOfWork unitOfWork, IValidator<CreateDoctorDto> createDoctorValidator, UserManager<AppUser> userManager = null, IValidator<UpdateDoctorDto> updateDoctorValidator = null, IWebHostEnvironment env = null)
         {
             _unitOfWork = unitOfWork;
             _createDoctorValidator = createDoctorValidator;
             _userManager = userManager;
             _updateDoctorValidator = updateDoctorValidator;
+            _env = env;
         }
 
         public async Task CreateDoctor(CreateDoctorDto model)
@@ -151,6 +155,59 @@ namespace Hospital.Application.Services.Implementations
 
             await _userManager.UpdateAsync(user);
             await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task<string> UploadProfilePictureAsync(string doctorId, IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                throw new Exception("Invalid file");
+
+            var doctor = await _unitOfWork.Doctors.FindByIdAsync(doctorId);
+
+            if (doctor == null)
+                throw new Exception("Doctor not found");
+
+            
+            var extension = Path.GetExtension(file.FileName).ToLower();
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
+
+            if (!allowedExtensions.Contains(extension))
+                throw new Exception("Invalid image type");
+
+            if (file.Length > 2 * 1024 * 1024)
+                throw new Exception("File too large");
+
+            
+            var folderPath = Path.Combine(_env.WebRootPath, "images");
+
+            if (!Directory.Exists(folderPath))
+                Directory.CreateDirectory(folderPath);
+
+            
+            var fileName = $"{Guid.NewGuid()}{extension}";
+            var filePath = Path.Combine(folderPath, fileName);
+
+            
+            if (!string.IsNullOrEmpty(doctor.ProfilePictureUrl))
+            {
+                var oldPath = Path.Combine(_env.WebRootPath, doctor.ProfilePictureUrl.TrimStart('/'));
+                if (File.Exists(oldPath))
+                    File.Delete(oldPath);
+            }
+
+            
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            
+            doctor.ProfilePictureUrl = $"/images/{fileName}";
+
+            await _unitOfWork.Doctors.Update(doctor);
+            await _unitOfWork.SaveChangesAsync();
+
+            return doctor.ProfilePictureUrl;
         }
     }
 }

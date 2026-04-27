@@ -19,8 +19,16 @@ namespace Hospital.Infrastructure.Persistence.Configurations
                    .HasColumnType("decimal(18,2)")
                    .IsRequired();
 
-            builder.Property(p => p.Status)
+            builder.Property(p => p.PaymentMethod)
                    .HasConversion<string>()
+                   .IsRequired();
+
+            builder.Property(p => p.PaymentStatus)
+                   .HasConversion<string>()
+                   .IsRequired();
+
+            builder.Property(p => p.CreatedDate)
+                   .HasDefaultValueSql("GETDATE()")
                    .IsRequired();
         }
     }
