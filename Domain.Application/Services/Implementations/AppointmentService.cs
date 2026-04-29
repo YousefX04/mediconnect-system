@@ -79,6 +79,7 @@ namespace Hospital.Application.Services.Implementations
                 filter: x => x.DoctorId == doctorId,
                 selector: x => new GetDoctorAppointmentsDto
                 {
+                    AppointmentId = x.AppointmentId,
                     PatientName = x.Patient.AppUser.FirstName + " " + x.Patient.AppUser.LastName,
                     AppointmentDate = x.AppointmentDate,
                     DayOfWeek = x.DayOfWeek.ToString(),
@@ -102,6 +103,7 @@ namespace Hospital.Application.Services.Implementations
                 filter: x => x.PatientId == patientId,
                 selector: x => new GetPatientAppointmentsDto
                 {
+                    AppointmentId = x.AppointmentId,
                     DoctorName = x.Doctor.AppUser.FirstName + " " + x.Doctor.AppUser.LastName,
                     AppointmentDate = x.AppointmentDate,
                     DayOfWeek = x.DayOfWeek.ToString(),
@@ -148,6 +150,29 @@ namespace Hospital.Application.Services.Implementations
 
             await _unitOfWork.Appointments.Update(appointment);
             await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task<List<GetAdminAppointmentsDto>> GetTodayAppointments(int pageNumber)
+        {
+            var today = DateOnly.FromDateTime(DateTime.Today);  
+
+            var appointments = await _unitOfWork.Appointments.GetAllAsync(
+                filter: a => a.AppointmentDate == today,
+                selector: a => new GetAdminAppointmentsDto
+                {
+                    AppointmentId = a.AppointmentId,
+                    PatientName = a.Patient.AppUser.FirstName + " " + a.Patient.AppUser.LastName,
+                    DoctorName = a.Doctor.AppUser.FirstName + " " + a.Doctor.AppUser.LastName,
+                    AppointmentDate = a.AppointmentDate,
+                    StartTime = a.StartTime,
+                    EndTime = a.EndTime,
+                    Status = a.Status.ToString()
+                },
+                pageNumber: pageNumber,
+                pageSize: 20
+            );
+
+            return appointments;
         }
     }
 }

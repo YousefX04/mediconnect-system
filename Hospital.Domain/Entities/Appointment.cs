@@ -16,5 +16,6 @@ namespace Hospital.Domain.Entities
         public int QueueNumber { get; set; }
         public Status Status { get; set; }
         public Payment Payment { get; set; }
+        public MedicalRecord MedicalRecord { get; set; }
     }
 }

@@ -128,5 +128,12 @@ namespace Hospital.Infrastructure.Repositories.Implementations
                 .Where(a => a.DoctorId == doctorId && a.AppointmentDate == DateOnly.FromDateTime(date))
                 .MaxAsync(a => (int?)a.QueueNumber) ?? 0;
         }
+
+        public async Task<decimal> SumAsync(Expression<Func<T, bool>> filter, Expression<Func<T, decimal>> selector)
+        {
+            return await _dbSet
+                .Where(filter)
+                .SumAsync(selector);
+        }
     }
 }

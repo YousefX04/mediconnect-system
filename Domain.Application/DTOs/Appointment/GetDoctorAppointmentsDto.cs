@@ -6,6 +6,7 @@ namespace Hospital.Application.DTOs.Appointment
 {
     public class GetDoctorAppointmentsDto
     {
+        public Guid AppointmentId { get; set; }
         public string PatientName { get; set; }
         public DateOnly AppointmentDate { get; set; }
         public string DayOfWeek { get; set; }

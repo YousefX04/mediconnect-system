@@ -3,12 +3,10 @@
     public class MedicalRecord
     {
         public Guid MedicalRecordId { get; set; }
-        public Patient Patient { get; set; }
-        public string PatientId { get; set; }
-        public Doctor Doctor { get; set; }
-        public string DoctorId { get; set; }
+        public Appointment Appointment { get; set; }
+        public Guid AppointmentId { get; set; }
         public string Diagnosis { get; set; }
         public string Prescription { get; set; }
-        public DateTime VisitDate { get; set; }
+        public DateTime CreatedDate { get; set; }
     }
 }

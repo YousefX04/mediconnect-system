@@ -18,6 +18,7 @@ namespace Hospital.Domain.Repositories.Interfaces
         Task Delete(T entity);
         Task<int> CountAsync();
         Task<int> CountAsync(Expression<Func<T, bool>> filter);
+        Task<decimal> SumAsync(Expression<Func<T, bool>> filter, Expression<Func<T, decimal>> selector);
         Task DeleteWhereAsync(Expression<Func<T, bool>> filter);
         Task<int> GetLastQueueNumberAsync(string doctorId, DateTime date);
     }

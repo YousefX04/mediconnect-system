@@ -10,15 +10,10 @@ namespace Hospital.Infrastructure.Persistence.Configurations
         {
             builder.HasKey(mr => mr.MedicalRecordId);
 
-            builder.HasOne(mr => mr.Patient)
-                   .WithMany(p => p.MedicalRecords)
-                   .HasForeignKey(mr => mr.PatientId)
+            builder.HasOne(mr => mr.Appointment)
+                   .WithOne(a => a.MedicalRecord)
+                   .HasForeignKey<MedicalRecord>(mr => mr.AppointmentId)
                    .OnDelete(DeleteBehavior.Cascade);
-
-            builder.HasOne(mr => mr.Doctor)
-                   .WithMany(d => d.MedicalRecords)
-                   .HasForeignKey(mr => mr.DoctorId)
-                   .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
