@@ -89,6 +89,7 @@ namespace Hospital.Application.Services.Implementations
                 selector: d => new GetAllDoctorsDto
                 {
                     Id = d.UserId,
+                    ProfilePictureUrl = d.ProfilePictureUrl,
                     FirstName = d.AppUser.FirstName,
                     LastName = d.AppUser.LastName,
                     ExperienceYears = d.ExperienceYears,
@@ -109,6 +110,7 @@ namespace Hospital.Application.Services.Implementations
                 selector: d => new GetDoctorDto
                 {
                     Id = d.UserId,
+                    ProfilePictureUrl = d.ProfilePictureUrl,
                     FirstName = d.AppUser.FirstName,
                     LastName = d.AppUser.LastName,
                     ExperienceYears = d.ExperienceYears,
