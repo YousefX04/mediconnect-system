@@ -7,6 +7,8 @@ namespace Hospital.Application.Services.Interfaces
 {
     public interface IDoctorScheduleService
     {
-        Task CreateDoctorSchedule(CreateDoctorScheduleDto model, string DoctorId);
+        Task CreateDoctorSchedule(CreateDoctorScheduleDto model, string doctorId);
+        Task UpdateDoctorSchedule(CreateDoctorScheduleDto model, string doctorId);
+        Task DeleteDoctorSchedule(string doctorId);
     }
 }

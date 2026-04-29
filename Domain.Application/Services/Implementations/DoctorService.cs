@@ -120,6 +120,7 @@ namespace Hospital.Application.Services.Implementations
                     IsAppleToAppointment = !d.Appointments.Any(a => a.PatientId == patientid && a.Status == Status.Pending),
                     DoctorSchedules = d.Schedules.Select(ds => new GetDoctorScheduleDto
                     {
+                        ScheduleId = ds.ScheduleId,
                         DayOfWeek = ds.DayOfWeek.ToString(),
                         StartTime = ds.StartTime,
                         EndTime = ds.EndTime,

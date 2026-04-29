@@ -19,16 +19,41 @@ namespace Hospital.Application.Services.Implementations
 
         public async Task<AdminDashboardDto> GetDashboard()
         {
+            var today = DateOnly.FromDateTime(DateTime.Now);
+
             var totalDoctors = await _unitOfWork.Doctors.CountAsync();
+
             var totalPatients = await _unitOfWork.Patients.CountAsync();
+
             var totalAppointments = await _unitOfWork.Appointments.CountAsync();
-            var totalCompletedAppointments = await _unitOfWork.Appointments.CountAsync(a => a.Status == Status.Completed);
-            var totalCancelledAppointments = await _unitOfWork.Appointments.CountAsync(a => a.Status == Status.Cancelled);
+
+            var totalAppointmentsToday = await _unitOfWork.Appointments
+                .CountAsync(a => a.AppointmentDate == today);
+
+            var totalPendingAppointmentsToday = await _unitOfWork.Appointments
+                .CountAsync(a => a.AppointmentDate == today && a.Status == Status.Pending);
+
+            var totalCompletedAppointmentsToday = await _unitOfWork.Appointments
+                .CountAsync(a => a.AppointmentDate == today && a.Status == Status.Completed);
+
+            var totalCancelledAppointmentsToday = await _unitOfWork.Appointments
+                .CountAsync(a => a.AppointmentDate == today && a.Status == Status.Cancelled);
+
             var totalPendingAppointments = await _unitOfWork.Appointments.CountAsync(a => a.Status == Status.Pending);
+
+            var totalCompletedAppointments = await _unitOfWork.Appointments.CountAsync(a => a.Status == Status.Completed);
+
+            var totalCancelledAppointments = await _unitOfWork.Appointments.CountAsync(a => a.Status == Status.Cancelled);
 
             var totalRevenue = await _unitOfWork.Appointments
                 .SumAsync(
                 filter: a => a.Status == Status.Completed,
+                selector: a => a.Doctor.ConsultationFee
+                );
+
+            var totalRevenueToday = await _unitOfWork.Appointments
+                .SumAsync(
+                filter: a => a.AppointmentDate == today && a.Status == Status.Completed,
                 selector: a => a.Doctor.ConsultationFee
                 );
 
@@ -37,10 +62,15 @@ namespace Hospital.Application.Services.Implementations
                 TotalDoctors = totalDoctors,
                 TotalPatients = totalPatients,
                 TotalAppointments = totalAppointments,
+                TotalAppointmentsToday = totalAppointmentsToday,
+                TotalPendingAppointmentsToday = totalPendingAppointmentsToday,
+                TotalCompletedAppointmentsToday = totalCompletedAppointmentsToday,
+                TotalCancelledAppointmentsToday = totalCancelledAppointmentsToday,
                 totalCompletedAppointments = totalCompletedAppointments,
                 totalCancelledAppointments = totalCancelledAppointments,
                 totalpendingAppointments = totalPendingAppointments,
-                TotalRevenue = totalRevenue
+                TotalRevenue = totalRevenue,
+                TotalRevenueToday = totalRevenueToday
             };
 
             return dashoard;

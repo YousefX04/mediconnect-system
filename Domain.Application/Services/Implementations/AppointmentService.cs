@@ -174,5 +174,51 @@ namespace Hospital.Application.Services.Implementations
 
             return appointments;
         }
+
+        public async Task<List<GetAdminAppointmentsDto>> GetTodayAppointmentsBySpecialization(string specializationName, int pageNumber = 1)
+        {
+            var today = DateOnly.FromDateTime(DateTime.Today);
+            
+            var appointments = await _unitOfWork.Appointments.GetAllAsync(
+                filter: a => a.AppointmentDate == today && a.Doctor.specialization.Name == specializationName,
+                selector: a => new GetAdminAppointmentsDto
+                {
+                    AppointmentId = a.AppointmentId,
+                    PatientName = a.Patient.AppUser.FirstName + " " + a.Patient.AppUser.LastName,
+                    DoctorName = a.Doctor.AppUser.FirstName + " " + a.Doctor.AppUser.LastName,
+                    AppointmentDate = a.AppointmentDate,
+                    StartTime = a.StartTime,
+                    EndTime = a.EndTime,
+                    Status = a.Status.ToString()
+                },
+                pageNumber: pageNumber,
+                pageSize: 20
+            ); 
+            
+            return appointments;
+        }
+
+        public async Task<List<GetAdminAppointmentsDto>> GetTodayAppointmentsByDoctor(string doctorId, int pageNumber = 1)
+        {
+            var today = DateOnly.FromDateTime(DateTime.Today);
+
+            var appointments = await _unitOfWork.Appointments.GetAllAsync(
+                filter: a => a.AppointmentDate == today && a.DoctorId == doctorId,
+                selector: a => new GetAdminAppointmentsDto
+                {
+                    AppointmentId = a.AppointmentId,
+                    PatientName = a.Patient.AppUser.FirstName + " " + a.Patient.AppUser.LastName,
+                    DoctorName = a.Doctor.AppUser.FirstName + " " + a.Doctor.AppUser.LastName,
+                    AppointmentDate = a.AppointmentDate,
+                    StartTime = a.StartTime,
+                    EndTime = a.EndTime,
+                    Status = a.Status.ToString()
+                },
+                pageNumber: pageNumber,
+                pageSize: 20
+            ); 
+            
+            return appointments;
+        }
     }
 }

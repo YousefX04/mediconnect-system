@@ -30,5 +30,19 @@ namespace Hospital.API.Controllers
             var appointments = await _appointmentService.GetTodayAppointments(pageNumber);
             return Ok(appointments);
         }
+
+        [HttpGet("appointments/specialization/{specializationName}")]
+        public async Task<IActionResult> GetAppointmentsBySpecialization(string specializationName, int pageNumber = 1)
+        {
+            var appointments = await _appointmentService.GetTodayAppointmentsBySpecialization(specializationName, pageNumber);
+            return Ok(appointments);
+        }
+
+        [HttpGet("appointments/doctor/{doctorId}")]
+        public async Task<IActionResult> GetAppointmentsByDoctor(string doctorId, int pageNumber = 1)
+        {
+            var appointments = await _appointmentService.GetTodayAppointmentsByDoctor(doctorId, pageNumber);
+            return Ok(appointments);
+        }
     }
 }
