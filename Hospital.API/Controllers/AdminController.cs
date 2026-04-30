@@ -10,11 +10,13 @@ namespace Hospital.API.Controllers
     {
         private readonly IAdminService _adminService;
         private readonly IAppointmentService _appointmentService;
+        private readonly IPatientService _petientService;
 
-        public AdminController(IAdminService adminService, IAppointmentService appointmentService)
+        public AdminController(IAdminService adminService, IAppointmentService appointmentService, IPatientService petientService)
         {
             _adminService = adminService;
             _appointmentService = appointmentService;
+            _petientService = petientService;
         }
 
         [HttpGet("dashboard")]
@@ -43,6 +45,13 @@ namespace Hospital.API.Controllers
         {
             var appointments = await _appointmentService.GetTodayAppointmentsByDoctor(doctorId, pageNumber);
             return Ok(appointments);
+        }
+
+        [HttpGet("patients")]
+        public async Task<IActionResult> GetAllPatients()
+        {
+            var patients = await _petientService.GetAllPatients();
+            return Ok(patients);
         }
     }
 }
