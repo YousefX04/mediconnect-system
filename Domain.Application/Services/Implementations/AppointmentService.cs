@@ -76,6 +76,7 @@ namespace Hospital.Application.Services.Implementations
                 selector: x => new GetDoctorAppointmentsDto
                 {
                     AppointmentId = x.AppointmentId,
+                    PatientId = x.PatientId,
                     PatientName = x.Patient.AppUser.FirstName + " " + x.Patient.AppUser.LastName,
                     AppointmentDate = x.AppointmentDate,
                     DayOfWeek = x.DayOfWeek.ToString(),
