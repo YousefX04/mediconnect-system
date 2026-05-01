@@ -1,4 +1,5 @@
-﻿using Hospital.Application.DTOs.DoctorSchedule;
+﻿using Hospital.Application.DTOs.Doctor;
+using Hospital.Application.DTOs.DoctorSchedule;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,5 +11,6 @@ namespace Hospital.Application.Services.Interfaces
         Task CreateDoctorSchedule(CreateDoctorScheduleDto model, string doctorId);
         Task UpdateDoctorSchedule(CreateDoctorScheduleDto model, string doctorId);
         Task DeleteDoctorSchedule(string doctorId);
+        Task<List<GetDoctorScheduleDto>> GetDoctorSchedule(string doctorId);
     }
 }

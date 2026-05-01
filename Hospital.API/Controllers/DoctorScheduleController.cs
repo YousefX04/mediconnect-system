@@ -16,6 +16,20 @@ namespace Hospital.API.Controllers
             _doctorScheduleService = doctorScheduleService;
         }
 
+        [HttpGet("{doctorId}")]
+        public async Task<IActionResult> GetDoctorSchedule(string doctorId)
+        {
+            try
+            {
+                var schedules = await _doctorScheduleService.GetDoctorSchedule(doctorId);
+                return Ok(schedules);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { errors = ex.Message });
+            }
+        }
+
         [HttpPost("{doctorId}")]
         public async Task<IActionResult> CreateDoctorSchedule(CreateDoctorScheduleDto model, string doctorId)
         {

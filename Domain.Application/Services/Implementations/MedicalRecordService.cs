@@ -77,6 +77,26 @@ namespace Hospital.Application.Services.Implementations
             return record;
         }
 
+        public async Task<List<GetMedicalRecordDto>> GetByPatientId(string patientId)
+        {
+            var records = await _unitOfWork.MedicalRecords
+                .GetAllAsync(
+                filter: m => m.Appointment.PatientId == patientId,
+                selector: m => new GetMedicalRecordDto
+                {
+                    MedicalRecordId = m.MedicalRecordId,
+                    AppointmentId = m.AppointmentId,
+                    Diagnosis = m.Diagnosis,
+                    Prescription = m.Prescription,
+                    CreatedDate = m.CreatedDate
+                });
+
+            if (records == null) 
+                throw new Exception("No medical records found for this patient");
+
+            return records;
+        }
+
         public async Task UpdateMedicalRecord(Guid medicalRecordId, UpdateMedicalRecordDto model)
         {
             var result = _updateMedicalRecordValidator.Validate(model);

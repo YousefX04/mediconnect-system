@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Hospital.Application.DTOs.Doctor;
 using Hospital.Application.DTOs.DoctorSchedule;
 using Hospital.Application.Services.Interfaces;
 using Hospital.Domain.Entities;
@@ -61,6 +62,26 @@ namespace Hospital.Application.Services.Implementations
             doctor.IsActive = false;
 
             await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task<List<GetDoctorScheduleDto>> GetDoctorSchedule(string doctorId)
+        {
+            var schedules = await _unitOfWork.DoctorSchedules
+                .GetAllAsync(
+                filter: x => x.DoctorId == doctorId,
+                selector: x => new GetDoctorScheduleDto
+                {
+                    ScheduleId = x.ScheduleId,
+                    DayOfWeek = x.DayOfWeek.ToString(),
+                    StartTime = x.StartTime,
+                    EndTime = x.EndTime,
+                    IsAvailable = x.IsAvailable
+                });
+                
+            if(schedules == null)
+                throw new Exception("Doctor schedule not found.");
+
+            return schedules;
         }
 
         public async Task UpdateDoctorSchedule(CreateDoctorScheduleDto model, string doctorId)

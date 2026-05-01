@@ -16,6 +16,20 @@ namespace Hospital.API.Controllers
             _medicalRecordService = medicalRecordService;
         }
 
+        [HttpGet("patient/{patientId}")]
+        public async Task<IActionResult> GetByPatientId(string patientId)
+        {
+            try
+            {
+                var records = await _medicalRecordService.GetByPatientId(patientId);
+                return Ok(records);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { errors = ex.Message });
+            }
+        }
+
         [HttpGet("{appointmentId}")]
         public async Task<IActionResult> GetByAppointmentId(Guid appointmentId)
         {
