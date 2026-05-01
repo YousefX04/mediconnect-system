@@ -1,5 +1,4 @@
 ﻿using Hospital.Application.Services.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hospital.API.Controllers
@@ -24,6 +23,20 @@ namespace Hospital.API.Controllers
         {
             var dashboard = await _adminService.GetDashboard();
             return Ok(dashboard);
+        }
+
+        [HttpGet("revenue/doctor/{doctorId}")]
+        public async Task<IActionResult> GetRevenueByDoctor(string doctorId)
+        {
+            var revenue = await _adminService.GetRevenueByDoctor(doctorId);
+            return Ok(revenue);
+        }
+
+        [HttpGet("revenue/specialization/{specializationName}")]
+        public async Task<IActionResult> GetRevenueBySpecialization(string specializationName)
+        {
+            var revenue = await _adminService.GetRevenueBySpecialization(specializationName);
+            return Ok(revenue);
         }
 
         [HttpGet("appointments")]

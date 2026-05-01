@@ -1,5 +1,4 @@
-﻿using Hospital.Domain.Entities;
-using Hospital.Domain.Repositories.Interfaces;
+﻿using Hospital.Domain.Repositories.Interfaces;
 using Hospital.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;

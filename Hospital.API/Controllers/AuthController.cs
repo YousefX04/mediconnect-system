@@ -30,6 +30,20 @@ namespace Hospital.API.Controllers
             }
         }
 
+        [HttpPost("RefreshToken")]
+        public async Task<IActionResult> RefreshToken(Guid refreshToken)
+        {
+            try
+            {
+                var token = await _authService.RefreshToken(refreshToken);
+                return Ok(token);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { errors = ex.Message });
+            }
+        }
+
         [HttpPost("Register")]
         public async Task<IActionResult> Register(UserRegisterDto model)
         {

@@ -2,9 +2,6 @@
 using Hospital.Application.Services.Interfaces;
 using Hospital.Domain.Enums;
 using Hospital.Domain.Repositories.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Hospital.Application.Services.Implementations
 {
@@ -74,6 +71,66 @@ namespace Hospital.Application.Services.Implementations
             };
 
             return dashoard;
+        }
+
+        public async Task<RevenueByDoctorDto> GetRevenueByDoctor(string doctorId)
+        {
+            var today = DateOnly.FromDateTime(DateTime.Now);
+
+            var totalRevenue = await _unitOfWork.Appointments
+                .SumAsync(
+                filter: a => a.DoctorId == doctorId && a.Status == Status.Completed,
+                selector: a => a.Doctor.ConsultationFee
+                );
+
+            var totalRevenueToday = await _unitOfWork.Appointments
+                .SumAsync(
+                filter: a => a.DoctorId == doctorId && a.AppointmentDate == today && a.Status == Status.Completed,
+                selector: a => a.Doctor.ConsultationFee
+                );
+
+            var doctor = await _unitOfWork.Doctors.GetAsync(
+                filter: d => d.UserId == doctorId,
+                selector: d => new
+                {
+                    d.AppUser.FirstName,
+                    d.AppUser.LastName
+                }
+                );
+
+            var revenueByDoctor = new RevenueByDoctorDto
+            {
+                DoctorName = doctor.FirstName + " " + doctor.LastName,
+                TotalRevenue = totalRevenue,
+                TotalRevenueToday = totalRevenueToday
+            };
+
+            return revenueByDoctor;
+        }
+
+        public async Task<RevenueBySpecializationDto> GetRevenueBySpecialization(string sepecializationName)
+        {
+            var today = DateOnly.FromDateTime(DateTime.Now);
+
+            var totalRevenue = await _unitOfWork.Appointments
+                .SumAsync(
+                filter: a => a.Doctor.specialization.Name == sepecializationName && a.Status == Status.Completed,
+                selector: a => a.Doctor.ConsultationFee
+                );
+
+            var totalRevenueToday = await _unitOfWork.Appointments
+                .SumAsync(
+                filter: a => a.Doctor.specialization.Name == sepecializationName && a.AppointmentDate == today && a.Status == Status.Completed,
+                selector: a => a.Doctor.ConsultationFee
+                );
+
+            var revenueBySpecialization = new RevenueBySpecializationDto
+            {
+                TotalRevenue = totalRevenue,
+                TotalRevenueToday = totalRevenueToday
+            };
+
+            return revenueBySpecialization;
         }
     }
 }

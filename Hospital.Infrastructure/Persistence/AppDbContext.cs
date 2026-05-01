@@ -18,6 +18,8 @@ namespace Hospital.Infrastructure.Persistence
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<MedicalRecord> MedicalRecords { get; set; }
         public DbSet<Payment> Payments { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<Receptionist> Receptionists { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

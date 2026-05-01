@@ -17,6 +17,8 @@ namespace Hospital.Infrastructure.Repositories.Implementations
             MedicalRecords = new Repository<MedicalRecord>(_db);
             DoctorSchedules = new Repository<DoctorSchedule>(_db);
             Payments = new Repository<Payment>(_db);
+            RefreshTokens = new Repository<RefreshToken>(_db);
+            Receptionists = new Repository<Receptionist>(_db);
         }
         public IRepository<Patient> Patients { get; }
         public IRepository<Doctor> Doctors { get; }
@@ -25,6 +27,8 @@ namespace Hospital.Infrastructure.Repositories.Implementations
         public IRepository<MedicalRecord> MedicalRecords { get; }
         public IRepository<DoctorSchedule> DoctorSchedules { get; }
         public IRepository<Payment> Payments { get; }
+        public IRepository<RefreshToken> RefreshTokens { get; }
+        public IRepository<Receptionist> Receptionists { get; }
 
 
 

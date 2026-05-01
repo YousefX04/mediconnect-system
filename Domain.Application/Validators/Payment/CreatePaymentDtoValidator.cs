@@ -1,8 +1,5 @@
 ﻿using FluentValidation;
 using Hospital.Application.DTOs.Payment;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Hospital.Application.Validators.Payment
 {

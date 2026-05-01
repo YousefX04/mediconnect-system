@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Hospital.Application.DTOs.Admin
+﻿namespace Hospital.Application.DTOs.Admin
 {
     public class AdminDashboardDto
     {

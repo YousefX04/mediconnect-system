@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using Hospital.Application.DTOs.Doctor;
-using Hospital.Application.DTOs.DoctorSchedule;
 using Hospital.Application.Services.Interfaces;
 using Hospital.Domain.Entities;
 using Hospital.Domain.Enums;
@@ -102,7 +101,7 @@ namespace Hospital.Application.Services.Implementations
             return doctors;
         }
 
-        public async Task<GetDoctorDto> GetDoctor(string doctorId,string patientid)
+        public async Task<GetDoctorDto> GetDoctor(string doctorId, string patientid)
         {
             var doctor = await _unitOfWork.Doctors
                 .GetAsync(
@@ -131,6 +130,23 @@ namespace Hospital.Application.Services.Implementations
                 });
 
             return doctor;
+        }
+
+        public async Task<List<GetDoctorNamesDto>> GetDoctorNames()
+        {
+            var doctors = await _unitOfWork.Doctors
+                .GetAllAsync(
+                filter: d => d.Receptionist == null,
+                selector: d => new GetDoctorNamesDto
+                {
+                    DoctorId = d.UserId,
+                    DoctorName = $"{d.AppUser.FirstName} {d.AppUser.LastName}"
+                });
+
+            if (doctors == null)
+                throw new Exception("No doctors found!");
+
+            return doctors;
         }
 
         public async Task UpdateDoctor(string id, UpdateDoctorDto model)
@@ -170,7 +186,7 @@ namespace Hospital.Application.Services.Implementations
             if (doctor == null)
                 throw new Exception("Doctor not found");
 
-            
+
             var extension = Path.GetExtension(file.FileName).ToLower();
             var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
 
@@ -180,17 +196,17 @@ namespace Hospital.Application.Services.Implementations
             if (file.Length > 2 * 1024 * 1024)
                 throw new Exception("File too large");
 
-            
+
             var folderPath = Path.Combine(_env.WebRootPath, "images");
 
             if (!Directory.Exists(folderPath))
                 Directory.CreateDirectory(folderPath);
 
-            
+
             var fileName = $"{Guid.NewGuid()}{extension}";
             var filePath = Path.Combine(folderPath, fileName);
 
-            
+
             if (!string.IsNullOrEmpty(doctor.ProfilePictureUrl))
             {
                 var oldPath = Path.Combine(_env.WebRootPath, doctor.ProfilePictureUrl.TrimStart('/'));
@@ -198,13 +214,13 @@ namespace Hospital.Application.Services.Implementations
                     File.Delete(oldPath);
             }
 
-            
+
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 await file.CopyToAsync(stream);
             }
 
-            
+
             doctor.ProfilePictureUrl = $"/images/{fileName}";
 
             await _unitOfWork.Doctors.Update(doctor);

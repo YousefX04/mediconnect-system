@@ -1,6 +1,5 @@
 ﻿using Hospital.Application.DTOs.MedicalRecord;
 using Hospital.Application.Services.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hospital.API.Controllers

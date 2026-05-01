@@ -4,9 +4,6 @@ using Hospital.Application.Services.Interfaces;
 using Hospital.Domain.Entities;
 using Hospital.Domain.Enums;
 using Hospital.Domain.Repositories.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Hospital.Application.Services.Implementations
 {
@@ -25,7 +22,7 @@ namespace Hospital.Application.Services.Implementations
         {
             var result = _createPaymentValidator.Validate(model);
 
-            if(!result.IsValid)
+            if (!result.IsValid)
                 throw new ValidationException(result.ToString(","));
 
             var appointment = await _unitOfWork.Appointments.FindByIdAsync(appointmentId);

@@ -1,8 +1,5 @@
 ﻿using Hospital.Application.DTOs.Doctor;
 using Hospital.Application.DTOs.DoctorSchedule;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Hospital.Application.Services.Interfaces
 {

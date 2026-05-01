@@ -15,6 +15,20 @@ namespace Hospital.API.Controllers
             _doctorService = doctorService;
         }
 
+        [HttpGet("names")]
+        public async Task<IActionResult> GetDoctorNames()
+        {
+            try
+            {
+                var doctorNames = await _doctorService.GetDoctorNames();
+                return Ok(doctorNames);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { errors = ex.Message });
+            }
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetAllDoctors(string? specializationName = null, int pageNumber = 1)
         {
@@ -30,7 +44,7 @@ namespace Hospital.API.Controllers
         }
 
         [HttpGet("{doctorId}/{patientId}")]
-        public async Task<IActionResult> GetDoctor(string doctorId,string patientId)
+        public async Task<IActionResult> GetDoctor(string doctorId, string patientId)
         {
             var doctor = await _doctorService.GetDoctor(doctorId, patientId);
 

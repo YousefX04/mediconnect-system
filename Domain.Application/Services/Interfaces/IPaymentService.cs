@@ -1,8 +1,4 @@
 ﻿using Hospital.Application.DTOs.Payment;
-using Hospital.Domain.Enums;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Hospital.Application.Services.Interfaces
 {

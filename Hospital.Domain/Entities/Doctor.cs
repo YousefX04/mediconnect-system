@@ -11,6 +11,7 @@
         public decimal ConsultationFee { get; set; }
         public bool IsActive { get; set; }
         public string? ProfilePictureUrl { get; set; }
+        public Receptionist Receptionist { get; set; }
         public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
         public ICollection<DoctorSchedule> Schedules { get; set; } = new List<DoctorSchedule>();
     }

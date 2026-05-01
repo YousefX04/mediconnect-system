@@ -12,5 +12,6 @@ namespace Hospital.Domain.Entities
         public DateTime CreatedAt { get; set; }
         public Patient Patient { get; set; }
         public Doctor Doctor { get; set; }
+        public Receptionist Receptionist { get; set; }
     }
 }

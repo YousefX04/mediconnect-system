@@ -1,6 +1,4 @@
-﻿using Hospital.Application.DTOs.DoctorSchedule;
-
-namespace Hospital.Application.DTOs.Doctor
+﻿namespace Hospital.Application.DTOs.Doctor
 {
     public class GetDoctorDto
     {

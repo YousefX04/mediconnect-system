@@ -4,9 +4,6 @@ using Hospital.Application.DTOs.DoctorSchedule;
 using Hospital.Application.Services.Interfaces;
 using Hospital.Domain.Entities;
 using Hospital.Domain.Repositories.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Hospital.Application.Services.Implementations
 {
@@ -38,7 +35,7 @@ namespace Hospital.Application.Services.Implementations
                     EndTime = item.StartTime.Add(TimeSpan.FromHours(8)),
                     IsAvailable = true
                 };
-                
+
                 await _unitOfWork.DoctorSchedules.AddAsync(doctorSchedule);
             }
 
@@ -77,8 +74,8 @@ namespace Hospital.Application.Services.Implementations
                     EndTime = x.EndTime,
                     IsAvailable = x.IsAvailable
                 });
-                
-            if(schedules == null)
+
+            if (schedules == null)
                 throw new Exception("Doctor schedule not found.");
 
             return schedules;
@@ -91,7 +88,7 @@ namespace Hospital.Application.Services.Implementations
             if (!result.IsValid)
                 throw new Exception(result.ToString(","));
 
-            
+
             var existingSchedules = await _unitOfWork.DoctorSchedules
                 .GetAllAsync(filter: x => x.DoctorId == doctorId);
 

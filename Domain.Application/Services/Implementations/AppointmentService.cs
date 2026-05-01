@@ -4,10 +4,6 @@ using Hospital.Application.Services.Interfaces;
 using Hospital.Domain.Entities;
 using Hospital.Domain.Enums;
 using Hospital.Domain.Repositories.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Hospital.Application.Services.Implementations
 {
@@ -34,7 +30,7 @@ namespace Hospital.Application.Services.Implementations
             var doctorScheduleTime = await _unitOfWork.DoctorSchedules
                 .GetAsync(
                 selector: x => new { x.StartTime, x.EndTime },
-                filter: x => x.DoctorId == model.DoctorId && x.DayOfWeek == dayOfWeek                       
+                filter: x => x.DoctorId == model.DoctorId && x.DayOfWeek == dayOfWeek
                 );
 
             var appointmentStartTimes = await _unitOfWork.Appointments
@@ -127,7 +123,7 @@ namespace Hospital.Application.Services.Implementations
             if (appointment == null)
                 throw new Exception("Appointment Not Found");
 
-            if(appointment.Status == Status.Completed)
+            if (appointment.Status == Status.Completed)
                 throw new Exception("Appointment is already completed");
 
             appointment.Status = Status.Completed;
@@ -154,7 +150,7 @@ namespace Hospital.Application.Services.Implementations
 
         public async Task<List<GetAdminAppointmentsDto>> GetTodayAppointments(int pageNumber)
         {
-            var today = DateOnly.FromDateTime(DateTime.Today);  
+            var today = DateOnly.FromDateTime(DateTime.Today);
 
             var appointments = await _unitOfWork.Appointments.GetAllAsync(
                 filter: a => a.AppointmentDate == today,
@@ -178,7 +174,7 @@ namespace Hospital.Application.Services.Implementations
         public async Task<List<GetAdminAppointmentsDto>> GetTodayAppointmentsBySpecialization(string specializationName, int pageNumber = 1)
         {
             var today = DateOnly.FromDateTime(DateTime.Today);
-            
+
             var appointments = await _unitOfWork.Appointments.GetAllAsync(
                 filter: a => a.AppointmentDate == today && a.Doctor.specialization.Name == specializationName,
                 selector: a => new GetAdminAppointmentsDto
@@ -193,8 +189,8 @@ namespace Hospital.Application.Services.Implementations
                 },
                 pageNumber: pageNumber,
                 pageSize: 20
-            ); 
-            
+            );
+
             return appointments;
         }
 
@@ -216,8 +212,8 @@ namespace Hospital.Application.Services.Implementations
                 },
                 pageNumber: pageNumber,
                 pageSize: 20
-            ); 
-            
+            );
+
             return appointments;
         }
     }

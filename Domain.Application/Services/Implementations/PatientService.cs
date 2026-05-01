@@ -1,9 +1,6 @@
 ﻿using Hospital.Application.DTOs.Patient;
 using Hospital.Application.Services.Interfaces;
 using Hospital.Domain.Repositories.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Hospital.Application.Services.Implementations
 {

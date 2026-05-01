@@ -52,10 +52,57 @@ namespace Hospital.Application.Services.Implementations
                     Role = userRole.First()
                 });
 
+            await _unitOfWork.RefreshTokens.DeleteWhereAsync(rt => rt.UserId == user.Id);
+
             var authDto = new AuthDto
             {
-                Token = token
+                Token = token,
+                RefreshToken = Guid.NewGuid()
             };
+
+            await _unitOfWork.RefreshTokens.AddAsync(new RefreshToken
+            {
+                UserId = user.Id,
+                Token = authDto.RefreshToken,
+                ExpiryDate = DateTime.UtcNow.AddDays(7)
+            });
+
+            await _unitOfWork.SaveChangesAsync();
+
+            return authDto;
+        }
+
+        public async Task<AuthDto> RefreshToken(Guid refreshToken)
+        {
+            var refToken = await _unitOfWork.RefreshTokens.GetAsync(rt => rt.Token == refreshToken && rt.ExpiryDate > DateTime.UtcNow);
+
+            if (refToken == null)
+                throw new Exception("Invalid refresh token!");
+
+            var user = await _userManager.FindByIdAsync(refToken.UserId);
+
+            if (user == null)
+                throw new Exception("User not found!");
+
+            var userRole = await _userManager.GetRolesAsync(user);
+
+            var token = _jwtService.GenerateToken(
+                new UserDto
+                {
+                    Id = user.Id,
+                    Email = user.Email,
+                    Role = userRole.First()
+                });
+
+            var authDto = new AuthDto
+            {
+                Token = token,
+                RefreshToken = Guid.NewGuid()
+            };
+
+            refToken.Token = authDto.RefreshToken;
+
+            await _unitOfWork.SaveChangesAsync();
 
             return authDto;
         }

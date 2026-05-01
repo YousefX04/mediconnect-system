@@ -15,6 +15,9 @@ namespace Hospital.Infrastructure.Persistence.Configurations.Identity
         public static readonly string PatientRoleId =
             "a3333333-3333-3333-3333-333333333333";
 
+        public static readonly string ReceptionistRoleId =
+            "a4444444-4444-4444-4444-444444444444";
+
 
         public void Configure(EntityTypeBuilder<IdentityRole> builder)
         {
@@ -42,6 +45,14 @@ namespace Hospital.Infrastructure.Persistence.Configurations.Identity
                     Name = "Patient",
                     NormalizedName = "PATIENT",
                     ConcurrencyStamp = "c3333333-3333-3333-3333-333333333333"
+                },
+
+                new IdentityRole
+                {
+                    Id = ReceptionistRoleId,
+                    Name = "Receptionist",
+                    NormalizedName = "RECEPTIONIST",
+                    ConcurrencyStamp = "c4444444-4444-4444-4444-444444444444"
                 }
 
             );

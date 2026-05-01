@@ -1,7 +1,4 @@
 ﻿using Hospital.Application.DTOs.Appointment;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Hospital.Application.Services.Interfaces
 {

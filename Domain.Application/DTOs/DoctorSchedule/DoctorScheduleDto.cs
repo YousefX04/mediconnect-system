@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Hospital.Application.DTOs.DoctorSchedule
+﻿namespace Hospital.Application.DTOs.DoctorSchedule
 {
     public class DoctorScheduleDto
     {

@@ -11,6 +11,8 @@ namespace Hospital.Domain.Repositories.Interfaces
         IRepository<MedicalRecord> MedicalRecords { get; }
         IRepository<DoctorSchedule> DoctorSchedules { get; }
         IRepository<Payment> Payments { get; }
+        IRepository<RefreshToken> RefreshTokens { get; }
+        IRepository<Receptionist> Receptionists { get; }
 
         Task<int> SaveChangesAsync();
     }

@@ -1,9 +1,4 @@
-﻿using Hospital.Domain.Enums;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Hospital.Application.DTOs.Appointment
+﻿namespace Hospital.Application.DTOs.Appointment
 {
     public class GetPatientAppointmentsDto
     {

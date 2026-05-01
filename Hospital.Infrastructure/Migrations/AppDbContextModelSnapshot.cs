@@ -327,6 +327,48 @@ namespace Hospital.Infrastructure.Migrations
                     b.ToTable("Payments");
                 });
 
+            modelBuilder.Entity("Hospital.Domain.Entities.Receptionist", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("DoctorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("UserId");
+
+                    b.HasIndex("DoctorId")
+                        .IsUnique();
+
+                    b.ToTable("Receptionists");
+                });
+
+            modelBuilder.Entity("Hospital.Domain.Entities.RefreshToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("ExpiryDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("Token")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshTokens");
+                });
+
             modelBuilder.Entity("Hospital.Domain.Entities.Specialization", b =>
                 {
                     b.Property<int>("SpecializationId")
@@ -395,6 +437,13 @@ namespace Hospital.Infrastructure.Migrations
                             ConcurrencyStamp = "c3333333-3333-3333-3333-333333333333",
                             Name = "Patient",
                             NormalizedName = "PATIENT"
+                        },
+                        new
+                        {
+                            Id = "a4444444-4444-4444-4444-444444444444",
+                            ConcurrencyStamp = "c4444444-4444-4444-4444-444444444444",
+                            Name = "Receptionist",
+                            NormalizedName = "RECEPTIONIST"
                         });
                 });
 
@@ -593,6 +642,36 @@ namespace Hospital.Infrastructure.Migrations
                     b.Navigation("Appointment");
                 });
 
+            modelBuilder.Entity("Hospital.Domain.Entities.Receptionist", b =>
+                {
+                    b.HasOne("Hospital.Domain.Entities.Doctor", "Doctor")
+                        .WithOne("Receptionist")
+                        .HasForeignKey("Hospital.Domain.Entities.Receptionist", "DoctorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Hospital.Domain.Entities.AppUser", "AppUser")
+                        .WithOne("Receptionist")
+                        .HasForeignKey("Hospital.Domain.Entities.Receptionist", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("Doctor");
+                });
+
+            modelBuilder.Entity("Hospital.Domain.Entities.RefreshToken", b =>
+                {
+                    b.HasOne("Hospital.Domain.Entities.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -651,6 +730,9 @@ namespace Hospital.Infrastructure.Migrations
 
                     b.Navigation("Patient")
                         .IsRequired();
+
+                    b.Navigation("Receptionist")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Hospital.Domain.Entities.Appointment", b =>
@@ -665,6 +747,9 @@ namespace Hospital.Infrastructure.Migrations
             modelBuilder.Entity("Hospital.Domain.Entities.Doctor", b =>
                 {
                     b.Navigation("Appointments");
+
+                    b.Navigation("Receptionist")
+                        .IsRequired();
 
                     b.Navigation("Schedules");
                 });

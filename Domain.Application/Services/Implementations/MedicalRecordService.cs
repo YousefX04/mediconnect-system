@@ -4,9 +4,6 @@ using Hospital.Application.Services.Interfaces;
 using Hospital.Domain.Entities;
 using Hospital.Domain.Enums;
 using Hospital.Domain.Repositories.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Hospital.Application.Services.Implementations
 {
@@ -91,7 +88,7 @@ namespace Hospital.Application.Services.Implementations
                     CreatedDate = m.CreatedDate
                 });
 
-            if (records == null) 
+            if (records == null)
                 throw new Exception("No medical records found for this patient");
 
             return records;
