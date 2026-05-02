@@ -50,7 +50,21 @@ namespace Hospital.API.Controllers
             try
             {
                 await _authService.Register(model);
-                return Ok("Signed in Successfully.");
+                return Ok("We sent you an OTP to your email. Please check your inbox and spam/junk folder.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { errors = ex.Message });
+            }
+        }
+
+        [HttpPost("VerifyEmail")]
+        public async Task<IActionResult> VerifyEmail(string email, string otp)
+        {
+            try
+            {
+                await _authService.ConfirmEmail(email, otp);
+                return Ok("Email verified successfully.");
             }
             catch (Exception ex)
             {

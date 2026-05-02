@@ -1,7 +1,10 @@
-﻿using Hospital.Domain.Entities;
+﻿using Hospital.Application.ExternalServices;
+using Hospital.Domain.Entities;
 using Hospital.Domain.Repositories.Interfaces;
+using Hospital.Infrastructure.ExternalServices;
 using Hospital.Infrastructure.Persistence;
 using Hospital.Infrastructure.Repositories.Implementations;
+using Hospital.Infrastructure.Settings;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -42,6 +45,11 @@ namespace Hospital.Infrastructure.DependencyInjection
 
             #region Repositories
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            #endregion
+
+            #region External Services
+            services.Configure<SendGridSettings>(configuration.GetSection("SendGridSettings"));
+            services.AddScoped<IEmailService, EmailService>();
             #endregion
 
             return services;

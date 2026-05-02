@@ -132,6 +132,36 @@ namespace Hospital.Application.Services.Implementations
             return doctor;
         }
 
+        public async Task<GetDoctorDetailsDto> GetDoctor(string doctorId)
+        {
+            var doctor = await _unitOfWork.Doctors
+                .GetAsync(
+                filter: d => d.UserId == doctorId,
+                selector: d => new GetDoctorDetailsDto
+                {
+                    Id = d.UserId,
+                    ProfilePictureUrl = d.ProfilePictureUrl,
+                    FirstName = d.AppUser.FirstName,
+                    LastName = d.AppUser.LastName,
+                    ExperienceYears = d.ExperienceYears,
+                    Biography = d.Biography,
+                    ConsultationFee = d.ConsultationFee,
+                    DateOfBirth = d.AppUser.DateOfBirth,
+                    Gender = d.AppUser.Gender,
+                    SpecializationName = d.specialization.Name,
+                    DoctorSchedules = d.Schedules.Select(ds => new GetDoctorScheduleDto
+                    {
+                        ScheduleId = ds.ScheduleId,
+                        DayOfWeek = ds.DayOfWeek.ToString(),
+                        StartTime = ds.StartTime,
+                        EndTime = ds.EndTime,
+                        IsAvailable = ds.Doctor.Appointments.Count(a => a.DayOfWeek == ds.DayOfWeek && a.Status == Status.Pending) < 16
+                    }).ToList()
+                });
+
+            return doctor;
+        }
+
         public async Task<List<GetDoctorNamesDto>> GetDoctorNames()
         {
             var doctors = await _unitOfWork.Doctors
@@ -145,6 +175,24 @@ namespace Hospital.Application.Services.Implementations
 
             if (doctors == null)
                 throw new Exception("No doctors found!");
+
+            return doctors;
+        }
+
+        public async Task<List<GetDoctorWorkingTodayDto>> GetDoctorsThatHasWorkToday()
+        {
+            var today = DateTime.Today.DayOfWeek;
+
+            var doctors = await _unitOfWork.DoctorSchedules.GetAllAsync(
+                filter: s => s.DayOfWeek == today && s.IsAvailable,
+                selector: d => new GetDoctorWorkingTodayDto
+                {
+                    Id = d.Doctor.UserId,
+                    ProfilePictureUrl = d.Doctor.ProfilePictureUrl,
+                    FirstName = d.Doctor.AppUser.FirstName,
+                    LastName = d.Doctor.AppUser.LastName,
+                    SpecializationName = d.Doctor.specialization.Name,
+                });
 
             return doctors;
         }

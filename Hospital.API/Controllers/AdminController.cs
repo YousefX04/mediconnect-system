@@ -10,12 +10,14 @@ namespace Hospital.API.Controllers
         private readonly IAdminService _adminService;
         private readonly IAppointmentService _appointmentService;
         private readonly IPatientService _petientService;
+        private readonly IDoctorService _doctorService;
 
-        public AdminController(IAdminService adminService, IAppointmentService appointmentService, IPatientService petientService)
+        public AdminController(IAdminService adminService, IAppointmentService appointmentService, IPatientService petientService, IDoctorService doctorService)
         {
             _adminService = adminService;
             _appointmentService = appointmentService;
             _petientService = petientService;
+            _doctorService = doctorService;
         }
 
         [HttpGet("dashboard")]
@@ -65,6 +67,13 @@ namespace Hospital.API.Controllers
         {
             var patients = await _petientService.GetAllPatients();
             return Ok(patients);
+        }
+
+        [HttpGet("doctors")]
+        public async Task<IActionResult> GetDoctorsThatHasWorkToday()
+        {
+            var doctors = await _doctorService.GetDoctorsThatHasWorkToday();
+            return Ok(doctors);
         }
     }
 }

@@ -7,5 +7,6 @@ namespace Hospital.Application.Services.Interfaces
         Task<AuthDto> Login(UserLoginDto model);
         Task Register(UserRegisterDto model);
         Task<AuthDto> RefreshToken(Guid refreshToken);
+        Task ConfirmEmail(string email, string otp);
     }
 }

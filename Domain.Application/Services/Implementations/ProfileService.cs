@@ -41,8 +41,10 @@ namespace Hospital.Application.Services.Implementations
                 filter: d => d.UserId == id,
                 selector: d => new GetDoctorProfileDto
                 {
+                    
                     FirstName = d.AppUser.FirstName,
                     LastName = d.AppUser.LastName,
+                    ProfilePictureUrl = d.ProfilePictureUrl,
                     Email = d.AppUser.Email,
                     PhoneNumber = d.AppUser.PhoneNumber,
                     DateOfBirth = d.AppUser.DateOfBirth,

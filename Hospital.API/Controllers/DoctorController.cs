@@ -51,6 +51,14 @@ namespace Hospital.API.Controllers
             return Ok(doctor);
         }
 
+        [HttpGet("{doctorId}")]
+        public async Task<IActionResult> GetDoctor(string doctorId)
+        {
+            var doctor = await _doctorService.GetDoctor(doctorId);
+
+            return Ok(doctor);
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateDoctor(CreateDoctorDto model)
         {

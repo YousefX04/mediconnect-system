@@ -10,7 +10,9 @@ namespace Hospital.Application.Services.Interfaces
         Task DeleteDoctor(string id);
         Task<List<GetAllDoctorsDto>> GetAllDoctors(string? specializationName = null, int pageNumber = 1);
         Task<GetDoctorDto> GetDoctor(string doctorId, string patientid);
+        Task<GetDoctorDetailsDto> GetDoctor(string doctorId);
         Task<string> UploadProfilePictureAsync(string doctorId, IFormFile file);
         Task<List<GetDoctorNamesDto>> GetDoctorNames();
+        Task<List<GetDoctorWorkingTodayDto>> GetDoctorsThatHasWorkToday();
     }
 }
