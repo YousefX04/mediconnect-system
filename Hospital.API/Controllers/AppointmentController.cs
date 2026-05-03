@@ -62,8 +62,8 @@ namespace Hospital.API.Controllers
         {
             try
             {
-                await _appointmentService.CreateAppointment(model);
-                return Ok("Appointment created successfully.");
+                var id = await _appointmentService.CreateAppointment(model);
+                return Ok(new { AppointmentId = id, Message = "Appointment created successfully." });
             }
             catch (Exception ex)
             {

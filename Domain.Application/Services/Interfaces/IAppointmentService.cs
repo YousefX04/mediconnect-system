@@ -5,7 +5,7 @@ namespace Hospital.Application.Services.Interfaces
 {
     public interface IAppointmentService
     {
-        Task CreateAppointment(CreateAppointmentDto model);
+        Task<Guid> CreateAppointment(CreateAppointmentDto model);
         Task<List<GetPatientAppointmentsDto>> GetPatientAppointments(string patientId);
         Task<List<GetDoctorAppointmentsDto>> GetDoctorAppointments(string doctorId);
         Task<List<GetAdminAppointmentsDto>> GetTodayAppointments(int pageNumber = 1);

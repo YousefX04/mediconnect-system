@@ -18,7 +18,7 @@ namespace Hospital.Application.Services.Implementations
             _createAppointmentValidator = createAppointmentValidator;
         }
 
-        public async Task CreateAppointment(CreateAppointmentDto model)
+        public async Task<Guid> CreateAppointment(CreateAppointmentDto model)
         {
             var result = _createAppointmentValidator.Validate(model);
 
@@ -66,6 +66,8 @@ namespace Hospital.Application.Services.Implementations
 
             await _unitOfWork.Appointments.AddAsync(appointment);
             await _unitOfWork.SaveChangesAsync();
+
+            return appointment.AppointmentId;
         }
 
         public async Task<List<GetDoctorAppointmentsDto>> GetDoctorAppointments(string doctorId)
