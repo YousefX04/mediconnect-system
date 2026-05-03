@@ -91,6 +91,7 @@ namespace Hospital.Application.Services.Implementations
                     ProfilePictureUrl = d.ProfilePictureUrl,
                     FirstName = d.AppUser.FirstName,
                     LastName = d.AppUser.LastName,
+                    SpecializationName = d.specialization.Name,
                     ExperienceYears = d.ExperienceYears,
                     Gender = d.AppUser.Gender
                 },
