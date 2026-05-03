@@ -59,5 +59,24 @@ namespace Hospital.Application.Services.Implementations
             await _unitOfWork.Receptionists.AddAsync(receptionist);
             await _unitOfWork.SaveChangesAsync();
         }
+
+        public async Task<GetReceptionistDto> GetReceptionistByDoctorId(string doctorId)
+        {
+            var receptionist = await _unitOfWork.Receptionists
+                .GetAsync(
+                filter: r => r.DoctorId == doctorId,
+                selector: r => new GetReceptionistDto
+                {
+                    Id = r.UserId,
+                    FirstName = r.AppUser.FirstName,
+                    LastName = r.AppUser.LastName,
+                    PhoneNumber = r.AppUser.PhoneNumber
+                });
+
+            if (receptionist == null)
+                throw new Exception("Receptionist not found for the given doctor ID.");
+
+            return receptionist;
+        }
     }
 }

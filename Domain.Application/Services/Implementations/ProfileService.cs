@@ -14,18 +14,25 @@ namespace Hospital.Application.Services.Implementations
         private readonly IValidator<UpdatePatientProfileDto> _updatePatientProfileValidator;
         private readonly IValidator<UpdateDoctorProfileDto> _updateDoctorProfileValidator;
         private readonly IValidator<ChangePasswordDto> _changePasswordValidator;
+        private readonly IValidator<UpdateReceptionistProfileDto> _updateReceptionistProfileValidator;
 
-        public ProfileService(IUnitOfWork unitOfWork, IValidator<UpdatePatientProfileDto> updatePatientProfileValidator, UserManager<AppUser> userManager, IValidator<UpdateDoctorProfileDto> updateDoctorProfileValidator, IValidator<ChangePasswordDto> changePasswordValidator)
+        public ProfileService(IUnitOfWork unitOfWork, IValidator<UpdatePatientProfileDto> updatePatientProfileValidator, UserManager<AppUser> userManager, IValidator<UpdateDoctorProfileDto> updateDoctorProfileValidator, IValidator<ChangePasswordDto> changePasswordValidator, IValidator<UpdateReceptionistProfileDto> updateReceptionistProfileValidator)
         {
             _unitOfWork = unitOfWork;
             _updatePatientProfileValidator = updatePatientProfileValidator;
             _userManager = userManager;
             _updateDoctorProfileValidator = updateDoctorProfileValidator;
             _changePasswordValidator = changePasswordValidator;
+            _updateReceptionistProfileValidator = updateReceptionistProfileValidator;
         }
 
         public async Task ChangePassword(string id, ChangePasswordDto model)
         {
+            var resultValidator = _changePasswordValidator.Validate(model);
+
+            if (!resultValidator.IsValid)
+                throw new Exception(resultValidator.ToString(","));
+
             var user = await _userManager.FindByIdAsync(id);
 
             var result = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
@@ -82,6 +89,25 @@ namespace Hospital.Application.Services.Implementations
             return patient;
         }
 
+        public async Task<GetReceptionistProfileDto> GetReceptionistProfile(string id)
+        {
+            var receptionist = await _unitOfWork.Receptionists
+                .GetAsync(
+                filter: r => r.UserId == id,
+                selector: r => new GetReceptionistProfileDto
+                {
+                    FirstName = r.AppUser.FirstName,
+                    LastName = r.AppUser.LastName,
+                    Gender = r.AppUser.Gender,
+                    Email = r.AppUser.Email,
+                    PhoneNumber = r.AppUser.PhoneNumber,
+                    DateOfBirth = r.AppUser.DateOfBirth,
+                    Address = r.AppUser.Address,
+                });
+
+            return receptionist;
+        }
+
         public async Task UpdateDoctorProfile(string id, UpdateDoctorProfileDto model)
         {
             var result = _updateDoctorProfileValidator.Validate(model);
@@ -132,6 +158,31 @@ namespace Hospital.Application.Services.Implementations
             patient.BloodType = model.BloodType;
             patient.Height = model.Height;
             patient.Weight = model.Weight;
+
+            await _userManager.UpdateAsync(user);
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task UpdateReceptionistProfile(string id, UpdateReceptionistProfileDto model)
+        {
+            var result = _updateReceptionistProfileValidator.Validate(model);
+
+            if (!result.IsValid)
+                throw new Exception(result.ToString(","));
+
+            var receptionist = await _unitOfWork.Receptionists
+                .GetAsync(
+                filter: r => r.UserId == id
+                );
+
+            var user = await _userManager.FindByIdAsync(id);
+
+            user.FirstName = model.FirstName;
+            user.LastName = model.LastName;
+            user.PhoneNumber = model.PhoneNumber;
+            user.DateOfBirth = model.DateOfBirth;
+            user.Gender = model.Gender;
+            user.Address = model.Address;
 
             await _userManager.UpdateAsync(user);
             await _unitOfWork.SaveChangesAsync();

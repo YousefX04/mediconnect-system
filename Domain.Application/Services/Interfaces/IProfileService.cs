@@ -8,6 +8,8 @@ namespace Hospital.Application.Services.Interfaces
         Task UpdatePatientProfile(string id, UpdatePatientProfileDto model);
         Task<GetDoctorProfileDto> GetDoctorProfile(string id);
         Task UpdateDoctorProfile(string id, UpdateDoctorProfileDto model);
+        Task<GetReceptionistProfileDto> GetReceptionistProfile(string id);
+        Task UpdateReceptionistProfile(string id, UpdateReceptionistProfileDto model);
         Task ChangePassword(string id, ChangePasswordDto model);
     }
 }

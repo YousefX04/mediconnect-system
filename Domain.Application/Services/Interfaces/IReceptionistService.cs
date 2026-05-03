@@ -5,5 +5,6 @@ namespace Hospital.Application.Services.Interfaces
     public interface IReceptionistService
     {
         Task CreateReceptionist(CreateReceptionistDto model);
+        Task<GetReceptionistDto> GetReceptionistByDoctorId(string doctorId);
     }
 }
