@@ -1,4 +1,5 @@
 ﻿using Hospital.Application.DTOs.Appointment;
+using System.Globalization;
 
 namespace Hospital.Application.Services.Interfaces
 {
@@ -12,5 +13,6 @@ namespace Hospital.Application.Services.Interfaces
         Task<List<GetAdminAppointmentsDto>> GetTodayAppointmentsByDoctor(string doctorId, int pageNumber = 1);
         Task CompleteAppointmentStatus(string appointmentId);
         Task CancelAppointmentStatus(string appointmentId);
+        Task<int> ExpectedNumber(string doctorId, string day);
     }
 }

@@ -15,20 +15,6 @@ namespace Hospital.API.Controllers
             _appointmentService = appointmentService;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateAppointment(CreateAppointmentDto model)
-        {
-            try
-            {
-                await _appointmentService.CreateAppointment(model);
-                return Ok("Appointment created successfully.");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { errors = ex.Message });
-            }
-        }
-
         [HttpGet("patient/{patientId}")]
         public async Task<IActionResult> GetAppointmentsByPatientId(string patientId)
         {
@@ -50,6 +36,34 @@ namespace Hospital.API.Controllers
             {
                 var appointments = await _appointmentService.GetDoctorAppointments(doctorId);
                 return Ok(appointments);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { errors = ex.Message });
+            }
+        }
+
+        [HttpGet("expected-number")]
+        public async Task<IActionResult> ExpectedNumber(string doctorId, string day)
+        {
+            try
+            {
+                var expectedNumber = await _appointmentService.ExpectedNumber(doctorId, day);
+                return Ok(expectedNumber);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { errors = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateAppointment(CreateAppointmentDto model)
+        {
+            try
+            {
+                await _appointmentService.CreateAppointment(model);
+                return Ok("Appointment created successfully.");
             }
             catch (Exception ex)
             {

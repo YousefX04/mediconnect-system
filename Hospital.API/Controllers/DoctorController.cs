@@ -76,8 +76,15 @@ namespace Hospital.API.Controllers
         [HttpPost("{doctorId}/upload-profile-picture")]
         public async Task<IActionResult> UploadProfilePicture(string doctorId, [FromForm] UploadDoctorImageDto model)
         {
-            var result = await _doctorService.UploadProfilePictureAsync(doctorId, model.File);
-            return Ok(result);
+            try 
+            { 
+                var result = await _doctorService.UploadProfilePictureAsync(doctorId, model.File);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { errors = ex.Message });
+            }
         }
 
         [HttpPut("{id}")]

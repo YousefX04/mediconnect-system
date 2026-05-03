@@ -217,5 +217,17 @@ namespace Hospital.Application.Services.Implementations
 
             return appointments;
         }
+
+        public async Task<int> ExpectedNumber(string doctorId, string day)
+        {
+            var dayOfWeek = Enum.Parse<DayOfWeek>(day);
+
+            var appointments = await _unitOfWork.Appointments
+                .CountAsync(
+                filter: x => x.DoctorId == doctorId && x.DayOfWeek == dayOfWeek && x.Status != Status.Completed
+                );
+
+            return appointments + 1;
+        }
     }
 }
