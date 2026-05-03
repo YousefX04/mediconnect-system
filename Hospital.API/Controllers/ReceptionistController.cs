@@ -1,6 +1,7 @@
 ﻿using Hospital.Application.DTOs.Receptionist;
 using Hospital.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
 
 namespace Hospital.API.Controllers
 {
@@ -13,6 +14,20 @@ namespace Hospital.API.Controllers
         public ReceptionistController(IReceptionistService receptionistService)
         {
             _receptionistService = receptionistService;
+        }
+
+        [HttpGet("{doctorId}")]
+        public async Task<IActionResult> GetReceptionistByDoctorId(string doctorId)
+        {
+            try
+            {
+                var receptionist = await _receptionistService.GetReceptionistByDoctorId(doctorId);
+                return Ok(receptionist);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { errors = ex.Message });
+            }
         }
 
         [HttpPost]

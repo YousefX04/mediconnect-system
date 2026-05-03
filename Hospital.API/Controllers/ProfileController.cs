@@ -31,6 +31,14 @@ namespace Hospital.API.Controllers
             return Ok(profile);
         }
 
+        [HttpGet("receptionist/{id}")]
+        public async Task<IActionResult> GetReceptionistProfile(string id)
+        {
+            var profile = await _profileService.GetReceptionistProfile(id);
+
+            return Ok(profile);
+        }
+
         [HttpPut("patient/{id}")]
         public async Task<IActionResult> UpdatePatientProfile(string id, UpdatePatientProfileDto model)
         {
@@ -52,6 +60,20 @@ namespace Hospital.API.Controllers
             {
                 await _profileService.UpdateDoctorProfile(id, model);
                 return Ok("Doctor profile updated successfully.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { errors = ex.Message });
+            }
+        }
+
+        [HttpPut("receptionist/{id}")]
+        public async Task<IActionResult> UpdateReceptionistProfile(string id, UpdateReceptionistProfileDto model)
+        {
+            try
+            {
+                await _profileService.UpdateReceptionistProfile(id, model);
+                return Ok("Receptionist profile updated successfully.");
             }
             catch (Exception ex)
             {
