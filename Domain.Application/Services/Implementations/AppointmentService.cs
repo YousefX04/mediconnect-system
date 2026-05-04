@@ -52,7 +52,10 @@ namespace Hospital.Application.Services.Implementations
                 );
 
             var lastQueueNumber = await _unitOfWork.Appointments
-                .GetLastQueueNumberAsync(model.DoctorId, DateTime.Now);
+                .GetLastQueueNumberAsync(
+                    model.DoctorId,
+                    model.AppointmentDate.ToDateTime(TimeOnly.MinValue)
+                );
 
             var appointment = new Appointment()
             {
