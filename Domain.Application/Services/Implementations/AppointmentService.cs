@@ -25,18 +25,30 @@ namespace Hospital.Application.Services.Implementations
             if (!result.IsValid)
                 throw new Exception(result.ToString(","));
 
-            var dayOfWeek = Enum.Parse<DayOfWeek>(model.DayOfWeek);
+            // Parse DayOfWeek
+            var parsedDay = Enum.Parse<DayOfWeek>(model.DayOfWeek);
 
+            // Validate that DayOfWeek matches AppointmentDate
+            if (model.AppointmentDate.DayOfWeek != parsedDay)
+                throw new Exception("DayOfWeek does not match AppointmentDate.");
+
+            // Get doctor schedule (still uses DayOfWeek)
             var doctorScheduleTime = await _unitOfWork.DoctorSchedules
                 .GetAsync(
-                selector: x => new { x.StartTime, x.EndTime },
-                filter: x => x.DoctorId == model.DoctorId && x.DayOfWeek == dayOfWeek
+                    selector: x => new { x.StartTime, x.EndTime },
+                    filter: x => x.DoctorId == model.DoctorId && x.DayOfWeek == parsedDay
                 );
 
+            if (doctorScheduleTime == null)
+                throw new Exception("Doctor is not available on this day.");
+
+            // Get existing appointments for SAME DATE (not DayOfWeek anymore)
             var appointmentStartTimes = await _unitOfWork.Appointments
                 .GetAllAsync(
-                selector: x => x.StartTime,
-                filter: x => x.DoctorId == model.DoctorId && x.DayOfWeek == dayOfWeek && x.Status != Status.Completed
+                    selector: x => x.StartTime,
+                    filter: x => x.DoctorId == model.DoctorId &&
+                                 x.AppointmentDate == model.AppointmentDate &&
+                                 x.Status != Status.Completed
                 );
 
             var lastQueueNumber = await _unitOfWork.Appointments
@@ -46,35 +58,55 @@ namespace Hospital.Application.Services.Implementations
             {
                 DoctorId = model.DoctorId,
                 PatientId = model.PatientId,
-                AppointmentDate = DateOnly.FromDateTime(DateTime.Now),
-                DayOfWeek = dayOfWeek,
+                AppointmentDate = model.AppointmentDate, // FIXED
+                DayOfWeek = parsedDay,
                 QueueNumber = lastQueueNumber + 1,
                 Status = Status.Pending
             };
 
+            // Generate time slot
             if (!appointmentStartTimes.Any())
             {
                 appointment.StartTime = doctorScheduleTime.StartTime;
-                appointment.EndTime = doctorScheduleTime.StartTime.Add(TimeSpan.FromMinutes(30)); // Assuming 30 minutes duration
             }
             else
             {
-                var appointmentLastStartTime = appointmentStartTimes.LastOrDefault();
-                appointment.StartTime = appointmentLastStartTime.Add(TimeSpan.FromMinutes(30)); // Assuming 30 minutes duration
-                appointment.EndTime = appointment.StartTime.Add(TimeSpan.FromMinutes(30)); // Assuming 30 minutes duration
+                var lastStartTime = appointmentStartTimes
+                    .OrderBy(t => t)
+                    .Last();
+
+                appointment.StartTime = lastStartTime.Add(TimeSpan.FromMinutes(30));
             }
 
+            appointment.EndTime = appointment.StartTime.Add(TimeSpan.FromMinutes(30));
+
+            // Prevent exceeding doctor schedule
+            if (appointment.EndTime > doctorScheduleTime.EndTime)
+                throw new Exception("No available slots for this doctor on this date.");
+
+            // Prevent same doctor same date
+            var hasSameDoctorSameDay = await _unitOfWork.Appointments.AnyAsync(a =>
+                a.PatientId == model.PatientId &&
+                a.DoctorId == model.DoctorId &&
+                a.Status != Status.Cancelled &&
+                a.AppointmentDate == model.AppointmentDate
+            );
+
+            if (hasSameDoctorSameDay)
+                throw new Exception("You already have an appointment with this doctor on this date.");
+
+            // Prevent time conflict (ANY doctor)
             var hasConflict = await _unitOfWork.Appointments.AnyAsync(a =>
                 a.PatientId == model.PatientId &&
                 a.Status != Status.Cancelled &&
-                a.DayOfWeek == dayOfWeek &&
+                a.AppointmentDate == model.AppointmentDate &&
                 appointment.StartTime < a.EndTime &&
                 appointment.EndTime > a.StartTime
             );
 
             if (hasConflict)
                 throw new Exception("Patient already has an appointment at this time.");
-            
+
             await _unitOfWork.Appointments.AddAsync(appointment);
             await _unitOfWork.SaveChangesAsync();
 
@@ -232,16 +264,12 @@ namespace Hospital.Application.Services.Implementations
             return appointments;
         }
 
-        public async Task<int> ExpectedNumber(string doctorId, string appointmentDate)
+        public async Task<int> ExpectedNumber(string doctorId, DateTime appointmentDate)
         {
-            var date = Enum.Parse<DateOnly>(appointmentDate);
-
-            var appointments = await _unitOfWork.Appointments
-                .CountAsync(
-                filter: x => x.DoctorId == doctorId && x.AppointmentDate == date && x.Status != Status.Completed
-                );
-
-            return appointments + 1;
+            // Reuse repository helper that already returns the last queue number for a given doctor and date.
+            // This avoids trying to call LINQ Where/Max on the repository interface which doesn't expose IEnumerable/IQueryable.
+            var lastQueueNumber = await _unitOfWork.Appointments.GetLastQueueNumberAsync(doctorId, appointmentDate);
+            return lastQueueNumber + 1;
         }
     }
 }

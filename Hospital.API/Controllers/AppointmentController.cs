@@ -44,11 +44,11 @@ namespace Hospital.API.Controllers
         }
 
         [HttpGet("expected-number")]
-        public async Task<IActionResult> ExpectedNumber(string doctorId, string day)
+        public async Task<IActionResult> ExpectedNumber(string doctorId, DateTime appointmentDate)
         {
             try
             {
-                var expectedNumber = await _appointmentService.ExpectedNumber(doctorId, day);
+                var expectedNumber = await _appointmentService.ExpectedNumber(doctorId, appointmentDate);
                 return Ok(expectedNumber);
             }
             catch (Exception ex)
