@@ -27,10 +27,20 @@ namespace Hospital.Application.Services.Implementations
 
             foreach (var item in model.DoctorSchedules)
             {
+                var dayOfWeek = Enum.Parse<DayOfWeek>(item.DayOfWeek);
+
+                var exists = await _unitOfWork.DoctorSchedules.AnyAsync(s =>
+                    s.DoctorId == doctorId &&
+                    s.DayOfWeek == dayOfWeek
+                );
+
+                if (exists)
+                    throw new Exception($"Schedule already exists for {dayOfWeek}");
+
                 var doctorSchedule = new DoctorSchedule
                 {
                     DoctorId = doctorId,
-                    DayOfWeek = Enum.Parse<DayOfWeek>(item.DayOfWeek),
+                    DayOfWeek = dayOfWeek,
                     StartTime = item.StartTime,
                     EndTime = item.StartTime.Add(TimeSpan.FromHours(8)),
                     IsAvailable = true
