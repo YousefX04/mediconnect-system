@@ -13,6 +13,6 @@ namespace Hospital.Application.Services.Interfaces
         Task<List<GetAdminAppointmentsDto>> GetTodayAppointmentsByDoctor(string doctorId, int pageNumber = 1);
         Task CompleteAppointmentStatus(string appointmentId);
         Task CancelAppointmentStatus(string appointmentId);
-        Task<int> ExpectedNumber(string doctorId, string day);
+        Task<int> ExpectedNumber(string doctorId, string appointmentDate);
     }
 }

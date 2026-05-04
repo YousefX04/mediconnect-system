@@ -52,7 +52,7 @@ namespace Hospital.Application.Services.Implementations
                 Status = Status.Pending
             };
 
-            if (appointmentStartTimes == null)
+            if (!appointmentStartTimes.Any())
             {
                 appointment.StartTime = doctorScheduleTime.StartTime;
                 appointment.EndTime = doctorScheduleTime.StartTime.Add(TimeSpan.FromMinutes(30)); // Assuming 30 minutes duration
@@ -64,6 +64,17 @@ namespace Hospital.Application.Services.Implementations
                 appointment.EndTime = appointment.StartTime.Add(TimeSpan.FromMinutes(30)); // Assuming 30 minutes duration
             }
 
+            var hasConflict = await _unitOfWork.Appointments.AnyAsync(a =>
+                a.PatientId == model.PatientId &&
+                a.Status != Status.Cancelled &&
+                a.DayOfWeek == dayOfWeek &&
+                appointment.StartTime < a.EndTime &&
+                appointment.EndTime > a.StartTime
+            );
+
+            if (hasConflict)
+                throw new Exception("Patient already has an appointment at this time.");
+            
             await _unitOfWork.Appointments.AddAsync(appointment);
             await _unitOfWork.SaveChangesAsync();
 
@@ -103,6 +114,7 @@ namespace Hospital.Application.Services.Implementations
                 selector: x => new GetPatientAppointmentsDto
                 {
                     AppointmentId = x.AppointmentId,
+                    DoctorId = x.DoctorId,
                     DoctorName = x.Doctor.AppUser.FirstName + " " + x.Doctor.AppUser.LastName,
                     AppointmentDate = x.AppointmentDate,
                     DayOfWeek = x.DayOfWeek.ToString(),
@@ -220,13 +232,13 @@ namespace Hospital.Application.Services.Implementations
             return appointments;
         }
 
-        public async Task<int> ExpectedNumber(string doctorId, string day)
+        public async Task<int> ExpectedNumber(string doctorId, string appointmentDate)
         {
-            var dayOfWeek = Enum.Parse<DayOfWeek>(day);
+            var date = Enum.Parse<DateOnly>(appointmentDate);
 
             var appointments = await _unitOfWork.Appointments
                 .CountAsync(
-                filter: x => x.DoctorId == doctorId && x.DayOfWeek == dayOfWeek && x.Status != Status.Completed
+                filter: x => x.DoctorId == doctorId && x.AppointmentDate == date && x.Status != Status.Completed
                 );
 
             return appointments + 1;

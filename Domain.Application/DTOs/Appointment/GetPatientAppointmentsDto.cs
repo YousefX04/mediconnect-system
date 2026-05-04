@@ -3,6 +3,7 @@
     public class GetPatientAppointmentsDto
     {
         public Guid AppointmentId { get; set; }
+        public string DoctorId { get; set; }
         public string DoctorName { get; set; }
         public DateOnly AppointmentDate { get; set; }
         public string DayOfWeek { get; set; }

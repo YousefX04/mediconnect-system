@@ -134,5 +134,10 @@ namespace Hospital.Infrastructure.Repositories.Implementations
                 .Where(filter)
                 .SumAsync(selector);
         }
+
+        public async Task<bool> AnyAsync(Expression<Func<T, bool>> filter)
+        {
+            return await _dbSet.AnyAsync(filter);
+        }
     }
 }

@@ -21,5 +21,6 @@ namespace Hospital.Domain.Repositories.Interfaces
         Task<decimal> SumAsync(Expression<Func<T, bool>> filter, Expression<Func<T, decimal>> selector);
         Task DeleteWhereAsync(Expression<Func<T, bool>> filter);
         Task<int> GetLastQueueNumberAsync(string doctorId, DateTime date);
+        Task<bool> AnyAsync(Expression<Func<T, bool>> filter);
     }
 }
