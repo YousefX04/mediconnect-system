@@ -98,6 +98,7 @@ namespace Hospital.Application.Services.Implementations
                 {
                     FirstName = r.AppUser.FirstName,
                     LastName = r.AppUser.LastName,
+                    DoctorName = r.Doctor.AppUser.FirstName + " " + r.Doctor.AppUser.LastName,
                     Gender = r.AppUser.Gender,
                     Email = r.AppUser.Email,
                     PhoneNumber = r.AppUser.PhoneNumber,
