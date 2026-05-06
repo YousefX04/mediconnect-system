@@ -10,5 +10,6 @@ namespace Hospital.Application.DTOs.Receptionist
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string PhoneNumber { get; set; }
+        public string doctorName { get; set; }
     }
 }

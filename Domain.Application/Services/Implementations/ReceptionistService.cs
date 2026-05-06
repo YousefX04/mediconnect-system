@@ -70,6 +70,7 @@ namespace Hospital.Application.Services.Implementations
                     Id = r.UserId,
                     FirstName = r.AppUser.FirstName,
                     LastName = r.AppUser.LastName,
+                    doctorName = r.Doctor.AppUser.FirstName + " " + r.Doctor.AppUser.LastName,
                     PhoneNumber = r.AppUser.PhoneNumber
                 });
 
