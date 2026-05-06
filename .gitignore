@@ -25,3 +25,4 @@ obj/
 Thumbs.db
 
 Hospital.API/appsettings.json
+Hospital.API/Properties/PublishProfiles
