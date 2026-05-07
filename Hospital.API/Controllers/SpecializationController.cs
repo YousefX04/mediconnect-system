@@ -26,7 +26,6 @@ namespace Hospital.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> CreateSpecialization(CreateSpecializationDto model)
         {
             try
@@ -41,7 +40,6 @@ namespace Hospital.API.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> UpdateSpecialization(int id, UpdateSpecializationDto model)
         {
             try
@@ -56,7 +54,6 @@ namespace Hospital.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> DeleteSpecialization(int id)
         {
             try
