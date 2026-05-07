@@ -41,21 +41,35 @@ namespace Hospital.API.Controllers
             return Ok(revenue);
         }
 
-        [HttpGet("appointments")]
+        [HttpGet("all-appointments")]
         public async Task<IActionResult> GetAllAppointments(int pageNumber = 1)
+        {
+            try
+            {
+                var appointments = await _appointmentService.GetAllAppointments(pageNumber);
+                return Ok(appointments);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { errors = ex.Message });
+            }
+        }
+
+        [HttpGet("today-appointments")]
+        public async Task<IActionResult> GetTodayAppointments(int pageNumber = 1)
         {
             var appointments = await _appointmentService.GetTodayAppointments(pageNumber);
             return Ok(appointments);
         }
 
-        [HttpGet("appointments/specialization/{specializationName}")]
+        [HttpGet("today-appointments/specialization/{specializationName}")]
         public async Task<IActionResult> GetAppointmentsBySpecialization(string specializationName, int pageNumber = 1)
         {
             var appointments = await _appointmentService.GetTodayAppointmentsBySpecialization(specializationName, pageNumber);
             return Ok(appointments);
         }
 
-        [HttpGet("appointments/doctor/{doctorId}")]
+        [HttpGet("today-appointments/doctor/{doctorId}")]
         public async Task<IActionResult> GetAppointmentsByDoctor(string doctorId, int pageNumber = 1)
         {
             var appointments = await _appointmentService.GetTodayAppointmentsByDoctor(doctorId, pageNumber);
@@ -69,7 +83,7 @@ namespace Hospital.API.Controllers
             return Ok(patients);
         }
 
-        [HttpGet("doctors")]
+        [HttpGet("doctors-working-today")]
         public async Task<IActionResult> GetDoctorsThatHasWorkToday()
         {
             var doctors = await _doctorService.GetDoctorsThatHasWorkToday();

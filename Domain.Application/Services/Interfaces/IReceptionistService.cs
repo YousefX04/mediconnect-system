@@ -6,5 +6,7 @@ namespace Hospital.Application.Services.Interfaces
     {
         Task CreateReceptionist(CreateReceptionistDto model);
         Task<GetReceptionistDto> GetReceptionistByDoctorId(string doctorId);
+        Task UpdateReceptionst(string receptionstId, UpdateReceptionistDto model);
+        Task DeleteReceptionist(string receptionistId);
     }
 }

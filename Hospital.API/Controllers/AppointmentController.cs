@@ -43,6 +43,20 @@ namespace Hospital.API.Controllers
             }
         }
 
+        [HttpGet("receptionist/{receptionistId}")]
+        public async Task<IActionResult> GetAppointmentsByReceptionistId(string receptionistId)
+        {
+            try
+            {
+                var appointments = await _appointmentService.GetReceptionistAppointments(receptionistId);
+                return Ok(appointments);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { errors = ex.Message });
+            }
+        }
+
         [HttpGet("expected-number")]
         public async Task<IActionResult> ExpectedNumber(string doctorId, DateTime appointmentDate)
         {

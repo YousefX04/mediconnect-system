@@ -43,5 +43,33 @@ namespace Hospital.API.Controllers
                 return BadRequest(new { errors = ex.Message });
             }
         }
+
+        [HttpPut("{receptionistId}")]
+        public async Task<IActionResult> UpdateReceptionst(string receptionistId, UpdateReceptionistDto model)
+        {
+            try
+            {
+                await _receptionistService.UpdateReceptionst(receptionistId, model);
+                return Ok("Receptionist updated successfully.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { errors = ex.Message });
+            }
+        }
+
+        [HttpDelete("{receptionistId}")]
+        public async Task<IActionResult> DeleteReceptionist(string receptionistId)
+        {
+            try
+            {
+                await _receptionistService.DeleteReceptionist(receptionistId);
+                return Ok("Receptionist deleted successfully.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { errors = ex.Message });
+            }
+        }
     }
 }

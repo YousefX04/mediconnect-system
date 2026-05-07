@@ -274,5 +274,57 @@ namespace Hospital.Application.Services.Implementations
             var lastQueueNumber = await _unitOfWork.Appointments.GetLastQueueNumberAsync(doctorId, appointmentDate);
             return lastQueueNumber + 1;
         }
+
+        public async Task<List<GetAllAppointmentsDto>> GetAllAppointments(int pageNumber = 1)
+        {
+            var appointments = await _unitOfWork.Appointments.GetAllAsync(
+                filter: a => true,
+                selector: a => new GetAllAppointmentsDto
+                {
+                    AppointmentId = a.AppointmentId,
+                    PatientName = a.Patient.AppUser.FirstName + " " + a.Patient.AppUser.LastName,
+                    DoctorName = a.Doctor.AppUser.FirstName + " " + a.Doctor.AppUser.LastName,
+                    AppointmentDate = a.AppointmentDate,
+                    StartTime = a.StartTime,
+                    EndTime = a.EndTime,
+                    Status = a.Status.ToString()
+                },
+                pageNumber: pageNumber,
+                pageSize: 20
+            );
+
+            if(!appointments.Any())
+                throw new Exception("No appointments found.");
+
+            return appointments;
+        }
+
+        public async Task<List<GetReceptionistAppointmentsDto>> GetReceptionistAppointments(string receptionistId)
+        {
+            var receptionist = await _unitOfWork.Receptionists.GetAsync(r => r.UserId == receptionistId);
+
+            var appointments = await _unitOfWork.Appointments
+                .GetAllAsync(
+                filter: x => x.DoctorId == receptionist.DoctorId,
+                selector: x => new GetReceptionistAppointmentsDto
+                {
+                    AppointmentId = x.AppointmentId,
+                    DoctorId = x.DoctorId,
+                    DoctorName = x.Doctor.AppUser.FirstName + " " + x.Doctor.AppUser.LastName,
+                    PatientName = x.Patient.AppUser.FirstName + " " + x.Patient.AppUser.LastName,
+                    PatientId = x.PatientId,
+                    AppointmentDate = x.AppointmentDate,
+                    DayOfWeek = x.DayOfWeek.ToString(),
+                    StartTime = x.StartTime,
+                    EndTime = x.EndTime,
+                    QueueNumber = x.QueueNumber,
+                    Status = x.Status.ToString()
+                });
+
+            if(!appointments.Any())
+                throw new Exception("No appointments found.");
+
+            return appointments;
+        }
     }
 }

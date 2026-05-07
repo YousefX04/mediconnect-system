@@ -12,12 +12,14 @@ namespace Hospital.Application.Services.Implementations
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<AppUser> _userManager;
         private readonly IValidator<CreateReceptionistDto> _createReceptionistValidator;
+        private readonly IValidator<UpdateReceptionistDto> _updateReceptionistValidator;
 
-        public ReceptionistService(IUnitOfWork unitOfWork, UserManager<AppUser> userManager, IValidator<CreateReceptionistDto> createReceptionistValidator)
+        public ReceptionistService(IUnitOfWork unitOfWork, UserManager<AppUser> userManager, IValidator<CreateReceptionistDto> createReceptionistValidator, IValidator<UpdateReceptionistDto> updateReceptionistValidator)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _createReceptionistValidator = createReceptionistValidator;
+            _updateReceptionistValidator = updateReceptionistValidator;
         }
 
         public async Task CreateReceptionist(CreateReceptionistDto model)
@@ -60,6 +62,17 @@ namespace Hospital.Application.Services.Implementations
             await _unitOfWork.SaveChangesAsync();
         }
 
+        public async Task DeleteReceptionist(string receptionistId)
+        {
+            var user = await _userManager.FindByIdAsync(receptionistId);
+
+            if (user == null)
+                throw new Exception("Receptionist not found.");
+
+            await _userManager.DeleteAsync(user);
+            await _unitOfWork.SaveChangesAsync();
+        }
+
         public async Task<GetReceptionistDto> GetReceptionistByDoctorId(string doctorId)
         {
             var receptionist = await _unitOfWork.Receptionists
@@ -78,6 +91,29 @@ namespace Hospital.Application.Services.Implementations
                 throw new Exception("Receptionist not found for the given doctor ID.");
 
             return receptionist;
+        }
+
+        public async Task UpdateReceptionst(string receptionstId, UpdateReceptionistDto model)
+        {
+            var result = _updateReceptionistValidator.Validate(model);
+
+            if (!result.IsValid)
+                throw new Exception(result.ToString(","));
+
+            var user = await _userManager.FindByIdAsync(receptionstId);
+
+            if (user == null)
+                throw new Exception("Receptionist not found.");
+
+            user.FirstName = model.FirstName;
+            user.LastName = model.LastName;
+            user.PhoneNumber = model.PhoneNumber;
+            user.Gender = model.Gender;
+            user.DateOfBirth = model.DateOfBirth;
+            user.Address = model.Address;
+
+            await _userManager.UpdateAsync(user);
+            await _unitOfWork.SaveChangesAsync();
         }
     }
 }
