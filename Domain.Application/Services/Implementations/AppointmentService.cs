@@ -284,6 +284,7 @@ namespace Hospital.Application.Services.Implementations
                     AppointmentId = a.AppointmentId,
                     PatientName = a.Patient.AppUser.FirstName + " " + a.Patient.AppUser.LastName,
                     DoctorName = a.Doctor.AppUser.FirstName + " " + a.Doctor.AppUser.LastName,
+                    SpecializationName = a.Doctor.specialization.Name,
                     AppointmentDate = a.AppointmentDate,
                     StartTime = a.StartTime,
                     EndTime = a.EndTime,
