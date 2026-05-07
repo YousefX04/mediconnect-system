@@ -42,11 +42,11 @@ namespace Hospital.API.Controllers
         }
 
         [HttpGet("all-appointments")]
-        public async Task<IActionResult> GetAllAppointments(int pageNumber = 1)
+        public async Task<IActionResult> GetAllAppointments()
         {
             try
             {
-                var appointments = await _appointmentService.GetAllAppointments(pageNumber);
+                var appointments = await _appointmentService.GetAllAppointments();
                 return Ok(appointments);
             }
             catch (Exception ex)

@@ -275,7 +275,7 @@ namespace Hospital.Application.Services.Implementations
             return lastQueueNumber + 1;
         }
 
-        public async Task<List<GetAllAppointmentsDto>> GetAllAppointments(int pageNumber = 1)
+        public async Task<List<GetAllAppointmentsDto>> GetAllAppointments()
         {
             var appointments = await _unitOfWork.Appointments.GetAllAsync(
                 filter: a => true,
@@ -289,9 +289,7 @@ namespace Hospital.Application.Services.Implementations
                     StartTime = a.StartTime,
                     EndTime = a.EndTime,
                     Status = a.Status.ToString()
-                },
-                pageNumber: pageNumber,
-                pageSize: 20
+                }
             );
 
             if(!appointments.Any())

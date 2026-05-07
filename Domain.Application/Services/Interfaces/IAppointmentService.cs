@@ -15,7 +15,7 @@ namespace Hospital.Application.Services.Interfaces
         Task CompleteAppointmentStatus(string appointmentId);
         Task CancelAppointmentStatus(string appointmentId);
         Task<int> ExpectedNumber(string doctorId, DateTime appointmentDate);
-        Task<List<GetAllAppointmentsDto>> GetAllAppointments(int pageNumber = 1);
+        Task<List<GetAllAppointmentsDto>> GetAllAppointments();
 
     }
 }
