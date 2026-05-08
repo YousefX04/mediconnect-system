@@ -56,23 +56,23 @@ namespace Hospital.API.Controllers
         }
 
         [HttpGet("today-appointments")]
-        public async Task<IActionResult> GetTodayAppointments(int pageNumber = 1)
+        public async Task<IActionResult> GetTodayAppointments()
         {
-            var appointments = await _appointmentService.GetTodayAppointments(pageNumber);
+            var appointments = await _appointmentService.GetTodayAppointments();
             return Ok(appointments);
         }
 
         [HttpGet("today-appointments/specialization/{specializationName}")]
-        public async Task<IActionResult> GetAppointmentsBySpecialization(string specializationName, int pageNumber = 1)
+        public async Task<IActionResult> GetAppointmentsBySpecialization(string specializationName)
         {
-            var appointments = await _appointmentService.GetTodayAppointmentsBySpecialization(specializationName, pageNumber);
+            var appointments = await _appointmentService.GetTodayAppointmentsBySpecialization(specializationName);
             return Ok(appointments);
         }
 
         [HttpGet("today-appointments/doctor/{doctorId}")]
-        public async Task<IActionResult> GetAppointmentsByDoctor(string doctorId, int pageNumber = 1)
+        public async Task<IActionResult> GetAppointmentsByDoctor(string doctorId)
         {
-            var appointments = await _appointmentService.GetTodayAppointmentsByDoctor(doctorId, pageNumber);
+            var appointments = await _appointmentService.GetTodayAppointmentsByDoctor(doctorId);
             return Ok(appointments);
         }
 

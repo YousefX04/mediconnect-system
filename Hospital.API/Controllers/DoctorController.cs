@@ -30,11 +30,11 @@ namespace Hospital.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllDoctors(string? specializationName = null, int pageNumber = 1)
+        public async Task<IActionResult> GetAllDoctors(string? specializationName = null)
         {
             try
             {
-                var doctors = await _doctorService.GetAllDoctors(specializationName, pageNumber);
+                var doctors = await _doctorService.GetAllDoctors(specializationName);
                 return Ok(doctors);
             }
             catch (Exception ex)

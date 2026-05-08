@@ -80,7 +80,7 @@ namespace Hospital.Application.Services.Implementations
             await _userManager.DeleteAsync(user);
         }
 
-        public async Task<List<GetAllDoctorsDto>> GetAllDoctors(string? specializationName = null, int pageNumber = 1)
+        public async Task<List<GetAllDoctorsDto>> GetAllDoctors(string? specializationName = null)
         {
             var doctors = await _unitOfWork.Doctors
                 .GetAllAsync(
@@ -94,9 +94,7 @@ namespace Hospital.Application.Services.Implementations
                     SpecializationName = d.specialization.Name,
                     ExperienceYears = d.ExperienceYears,
                     Gender = d.AppUser.Gender
-                },
-                pageNumber: pageNumber,
-                pageSize: 20
+                }
                 );
 
             return doctors;

@@ -198,7 +198,7 @@ namespace Hospital.Application.Services.Implementations
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task<List<GetAdminAppointmentsDto>> GetTodayAppointments(int pageNumber)
+        public async Task<List<GetAdminAppointmentsDto>> GetTodayAppointments()
         {
             var today = DateOnly.FromDateTime(DateTime.Today);
 
@@ -213,15 +213,13 @@ namespace Hospital.Application.Services.Implementations
                     StartTime = a.StartTime,
                     EndTime = a.EndTime,
                     Status = a.Status.ToString()
-                },
-                pageNumber: pageNumber,
-                pageSize: 20
+                }
             );
 
             return appointments;
         }
 
-        public async Task<List<GetAdminAppointmentsDto>> GetTodayAppointmentsBySpecialization(string specializationName, int pageNumber = 1)
+        public async Task<List<GetAdminAppointmentsDto>> GetTodayAppointmentsBySpecialization(string specializationName)
         {
             var today = DateOnly.FromDateTime(DateTime.Today);
 
@@ -236,15 +234,13 @@ namespace Hospital.Application.Services.Implementations
                     StartTime = a.StartTime,
                     EndTime = a.EndTime,
                     Status = a.Status.ToString()
-                },
-                pageNumber: pageNumber,
-                pageSize: 20
+                }
             );
 
             return appointments;
         }
 
-        public async Task<List<GetAdminAppointmentsDto>> GetTodayAppointmentsByDoctor(string doctorId, int pageNumber = 1)
+        public async Task<List<GetAdminAppointmentsDto>> GetTodayAppointmentsByDoctor(string doctorId)
         {
             var today = DateOnly.FromDateTime(DateTime.Today);
 
@@ -259,9 +255,7 @@ namespace Hospital.Application.Services.Implementations
                     StartTime = a.StartTime,
                     EndTime = a.EndTime,
                     Status = a.Status.ToString()
-                },
-                pageNumber: pageNumber,
-                pageSize: 20
+                }
             );
 
             return appointments;
