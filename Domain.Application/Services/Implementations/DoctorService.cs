@@ -78,6 +78,7 @@ namespace Hospital.Application.Services.Implementations
                 throw new Exception("Doctor not found!");
 
             await _userManager.DeleteAsync(user);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task<List<GetAllDoctorsDto>> GetAllDoctors(string? specializationName = null)
