@@ -41,6 +41,20 @@ namespace Hospital.API.Controllers
             return Ok(revenue);
         }
 
+        [HttpGet("all-doctors")]
+        public async Task<IActionResult> GetAllDoctorsForAdmin()
+        {
+            try
+            {
+                var doctors = await _doctorService.GetAllDoctorsForAdmin();
+                return Ok(doctors);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { errors = ex.Message });
+            }
+        }
+
         [HttpGet("all-appointments")]
         public async Task<IActionResult> GetAllAppointments()
         {

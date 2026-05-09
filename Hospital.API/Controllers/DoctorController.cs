@@ -87,12 +87,12 @@ namespace Hospital.API.Controllers
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateDoctor(string id, UpdateDoctorDto model)
+        [HttpPut("{doctorId}")]
+        public async Task<IActionResult> UpdateDoctor(string doctorId, UpdateDoctorDto model)
         {
             try
             {
-                await _doctorService.UpdateDoctor(id, model);
+                await _doctorService.UpdateDoctor(doctorId, model);
                 return Ok("Doctor updated successfully.");
             }
             catch (Exception ex)
@@ -101,12 +101,12 @@ namespace Hospital.API.Controllers
             }
         }
 
-        [HttpPut("Activate/{id}")]
-        public async Task<IActionResult> ActiveDoctor(string id)
+        [HttpPut("Activate/{doctorId}")]
+        public async Task<IActionResult> ActiveDoctor(string doctorId)
         {
             try
             {
-                await _doctorService.ActiveDoctor(id);
+                await _doctorService.ActiveDoctor(doctorId);
                 return Ok("Doctor activated successfully.");
             }
             catch (Exception ex)
@@ -115,12 +115,12 @@ namespace Hospital.API.Controllers
             }
         }
 
-        [HttpPut("Inactivate/{id}")]
-        public async Task<IActionResult> InactiveDoctor(string id)
+        [HttpPut("Inactivate/{doctorId}")]
+        public async Task<IActionResult> InactiveDoctor(string doctorId)
         {
             try
             {
-                await _doctorService.InactiveDoctor(id);
+                await _doctorService.InactiveDoctor(doctorId);
                 return Ok("Doctor inactivated successfully.");
             }
             catch (Exception ex)

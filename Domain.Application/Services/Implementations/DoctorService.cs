@@ -71,9 +71,9 @@ namespace Hospital.Application.Services.Implementations
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task InactiveDoctor(string id)
+        public async Task InactiveDoctor(string doctorId)
         {
-            var user = await _unitOfWork.Doctors.GetAsync(d => d.UserId == id);
+            var user = await _unitOfWork.Doctors.GetAsync(d => d.UserId == doctorId);
 
             if (user == null)
                 throw new Exception("Doctor not found!");
@@ -199,7 +199,7 @@ namespace Hospital.Application.Services.Implementations
             return doctors;
         }
 
-        public async Task UpdateDoctor(string id, UpdateDoctorDto model)
+        public async Task UpdateDoctor(string doctorId, UpdateDoctorDto model)
         {
             var result = _updateDoctorValidator.Validate(model);
 
@@ -208,10 +208,10 @@ namespace Hospital.Application.Services.Implementations
 
             var doctor = await _unitOfWork.Doctors
                 .GetAsync(
-                filter: d => d.UserId == id
+                filter: d => d.UserId == doctorId
                 );
 
-            var user = await _userManager.FindByIdAsync(id);
+            var user = await _userManager.FindByIdAsync(doctorId);
 
             user.FirstName = model.FirstName;
             user.LastName = model.LastName;
@@ -279,9 +279,9 @@ namespace Hospital.Application.Services.Implementations
             return doctor.ProfilePictureUrl;
         }
 
-        public async Task ActiveDoctor(string id)
+        public async Task ActiveDoctor(string doctorId)
         {
-            var user = await _unitOfWork.Doctors.GetAsync(d => d.UserId == id);
+            var user = await _unitOfWork.Doctors.GetAsync(d => d.UserId == doctorId);
 
             if (user == null)
                 throw new Exception("Doctor not found!");
@@ -289,6 +289,27 @@ namespace Hospital.Application.Services.Implementations
             user.IsActive = true;
 
             await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task<List<GetAllDoctorForAdminDto>> GetAllDoctorsForAdmin(string? specializationName = null)
+        {
+            var doctors = await _unitOfWork.Doctors
+                .GetAllAsync(
+                filter: d => (string.IsNullOrEmpty(specializationName) || d.specialization.Name == specializationName),
+                selector: d => new GetAllDoctorForAdminDto
+                {
+                    Id = d.UserId,
+                    IsActive = d.IsActive,
+                    ProfilePictureUrl = d.ProfilePictureUrl,
+                    FirstName = d.AppUser.FirstName,
+                    LastName = d.AppUser.LastName,
+                    SpecializationName = d.specialization.Name,
+                    ExperienceYears = d.ExperienceYears,
+                    Gender = d.AppUser.Gender
+                }
+                );
+
+            return doctors;
         }
     }
 }
