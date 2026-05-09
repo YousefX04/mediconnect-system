@@ -1,5 +1,7 @@
 ﻿using Hospital.Application.DTOs.Doctor;
 using Hospital.Application.Services.Interfaces;
+using Hospital.Domain.Constants;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hospital.API.Controllers
@@ -60,6 +62,7 @@ namespace Hospital.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> CreateDoctor(CreateDoctorDto model)
         {
             try
@@ -74,6 +77,7 @@ namespace Hospital.API.Controllers
         }
 
         [HttpPost("{doctorId}/upload-profile-picture")]
+        [Authorize(Roles = Role.Doctor)]
         public async Task<IActionResult> UploadProfilePicture(string doctorId, [FromForm] UploadDoctorImageDto model)
         {
             try 
@@ -88,6 +92,7 @@ namespace Hospital.API.Controllers
         }
 
         [HttpPut("{doctorId}")]
+        [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> UpdateDoctor(string doctorId, UpdateDoctorDto model)
         {
             try
@@ -102,6 +107,7 @@ namespace Hospital.API.Controllers
         }
 
         [HttpPut("Activate/{doctorId}")]
+        [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> ActiveDoctor(string doctorId)
         {
             try
@@ -116,6 +122,7 @@ namespace Hospital.API.Controllers
         }
 
         [HttpPut("Inactivate/{doctorId}")]
+        [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> InactiveDoctor(string doctorId)
         {
             try

@@ -1,5 +1,7 @@
 ﻿using Hospital.Application.DTOs.DoctorSchedule;
 using Hospital.Application.Services.Interfaces;
+using Hospital.Domain.Constants;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hospital.API.Controllers
@@ -30,6 +32,7 @@ namespace Hospital.API.Controllers
         }
 
         [HttpPost("{doctorId}")]
+        [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> CreateDoctorSchedule(CreateDoctorScheduleDto model, string doctorId)
         {
             try
@@ -44,6 +47,7 @@ namespace Hospital.API.Controllers
         }
 
         [HttpPut("{doctorId}")]
+        [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> UpdateDoctorSchedule(CreateDoctorScheduleDto model, string doctorId)
         {
             try
@@ -58,6 +62,7 @@ namespace Hospital.API.Controllers
         }
 
         [HttpDelete("{doctorId}")]
+        [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> DeleteDoctorSchedule(string doctorId)
         {
             try

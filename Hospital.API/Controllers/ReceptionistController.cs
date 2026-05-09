@@ -1,5 +1,7 @@
 ﻿using Hospital.Application.DTOs.Receptionist;
 using Hospital.Application.Services.Interfaces;
+using Hospital.Domain.Constants;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
 
@@ -31,6 +33,7 @@ namespace Hospital.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> CreateReceptionist(CreateReceptionistDto model)
         {
             try
@@ -45,6 +48,7 @@ namespace Hospital.API.Controllers
         }
 
         [HttpPut("{receptionistId}")]
+        [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> UpdateReceptionst(string receptionistId, UpdateReceptionistDto model)
         {
             try
@@ -73,6 +77,7 @@ namespace Hospital.API.Controllers
         }
 
         [HttpDelete("{receptionistId}")]
+        [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> DeleteReceptionist(string receptionistId)
         {
             try

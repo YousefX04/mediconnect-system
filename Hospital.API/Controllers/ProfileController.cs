@@ -1,5 +1,7 @@
 ﻿using Hospital.Application.DTOs.Profile;
 using Hospital.Application.Services.Interfaces;
+using Hospital.Domain.Constants;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hospital.API.Controllers
@@ -40,6 +42,7 @@ namespace Hospital.API.Controllers
         }
 
         [HttpPut("patient/{id}")]
+        [Authorize(Roles = Role.Patient)]
         public async Task<IActionResult> UpdatePatientProfile(string id, UpdatePatientProfileDto model)
         {
             try
@@ -54,6 +57,7 @@ namespace Hospital.API.Controllers
         }
 
         [HttpPut("doctor/{id}")]
+        [Authorize(Roles = Role.Doctor)]
         public async Task<IActionResult> UpdateDoctorProfile(string id, UpdateDoctorProfileDto model)
         {
             try
@@ -68,6 +72,7 @@ namespace Hospital.API.Controllers
         }
 
         [HttpPut("receptionist/{id}")]
+        [Authorize(Roles = Role.Receptionist)]
         public async Task<IActionResult> UpdateReceptionistProfile(string id, UpdateReceptionistProfileDto model)
         {
             try

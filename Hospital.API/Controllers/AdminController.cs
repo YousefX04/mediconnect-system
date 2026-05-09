@@ -1,4 +1,6 @@
 ﻿using Hospital.Application.Services.Interfaces;
+using Hospital.Domain.Constants;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hospital.API.Controllers
@@ -21,6 +23,7 @@ namespace Hospital.API.Controllers
         }
 
         [HttpGet("dashboard")]
+        [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> GetDashboard()
         {
             var dashboard = await _adminService.GetDashboard();
@@ -28,6 +31,7 @@ namespace Hospital.API.Controllers
         }
 
         [HttpGet("revenue/doctor/{doctorId}")]
+        [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> GetRevenueByDoctor(string doctorId)
         {
             var revenue = await _adminService.GetRevenueByDoctor(doctorId);
@@ -35,6 +39,7 @@ namespace Hospital.API.Controllers
         }
 
         [HttpGet("revenue/specialization/{specializationName}")]
+        [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> GetRevenueBySpecialization(string specializationName)
         {
             var revenue = await _adminService.GetRevenueBySpecialization(specializationName);
@@ -42,6 +47,7 @@ namespace Hospital.API.Controllers
         }
 
         [HttpGet("all-doctors")]
+        [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> GetAllDoctorsForAdmin()
         {
             try
@@ -56,6 +62,7 @@ namespace Hospital.API.Controllers
         }
 
         [HttpGet("all-appointments")]
+        [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> GetAllAppointments()
         {
             try
@@ -70,6 +77,7 @@ namespace Hospital.API.Controllers
         }
 
         [HttpGet("today-appointments")]
+        [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> GetTodayAppointments()
         {
             var appointments = await _appointmentService.GetTodayAppointments();
@@ -77,6 +85,7 @@ namespace Hospital.API.Controllers
         }
 
         [HttpGet("today-appointments/specialization/{specializationName}")]
+        [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> GetAppointmentsBySpecialization(string specializationName)
         {
             var appointments = await _appointmentService.GetTodayAppointmentsBySpecialization(specializationName);
@@ -84,6 +93,7 @@ namespace Hospital.API.Controllers
         }
 
         [HttpGet("today-appointments/doctor/{doctorId}")]
+        [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> GetAppointmentsByDoctor(string doctorId)
         {
             var appointments = await _appointmentService.GetTodayAppointmentsByDoctor(doctorId);
@@ -91,6 +101,7 @@ namespace Hospital.API.Controllers
         }
 
         [HttpGet("patients")]
+        [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> GetAllPatients()
         {
             var patients = await _petientService.GetAllPatients();
@@ -98,6 +109,7 @@ namespace Hospital.API.Controllers
         }
 
         [HttpGet("doctors-working-today")]
+        [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> GetDoctorsThatHasWorkToday()
         {
             var doctors = await _doctorService.GetDoctorsThatHasWorkToday();

@@ -1,5 +1,7 @@
 ﻿using Hospital.Application.DTOs.Appointment;
 using Hospital.Application.Services.Interfaces;
+using Hospital.Domain.Constants;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hospital.API.Controllers
@@ -16,6 +18,7 @@ namespace Hospital.API.Controllers
         }
 
         [HttpGet("patient/{patientId}")]
+        [Authorize(Roles = Role.Patient)]
         public async Task<IActionResult> GetAppointmentsByPatientId(string patientId)
         {
             try
@@ -30,6 +33,7 @@ namespace Hospital.API.Controllers
         }
 
         [HttpGet("doctor/{doctorId}")]
+        [Authorize(Roles = Role.Doctor)]
         public async Task<IActionResult> GetAppointmentsByDoctorId(string doctorId)
         {
             try
@@ -44,6 +48,7 @@ namespace Hospital.API.Controllers
         }
 
         [HttpGet("receptionist/{receptionistId}")]
+        [Authorize(Roles = Role.Receptionist)]
         public async Task<IActionResult> GetAppointmentsByReceptionistId(string receptionistId)
         {
             try
@@ -72,6 +77,7 @@ namespace Hospital.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = Role.Patient)]
         public async Task<IActionResult> CreateAppointment(CreateAppointmentDto model)
         {
             try
@@ -86,6 +92,7 @@ namespace Hospital.API.Controllers
         }
 
         [HttpPut("complete")]
+        [Authorize(Roles = Role.Receptionist)]
         public async Task<IActionResult> CompleteAppointmentStatus(string appointmentId)
         {
             try
@@ -100,6 +107,7 @@ namespace Hospital.API.Controllers
         }
 
         [HttpPut("cancel")]
+        [Authorize(Roles = Role.Receptionist)]
         public async Task<IActionResult> CancelAppointmentStatus(string appointmentId)
         {
             try

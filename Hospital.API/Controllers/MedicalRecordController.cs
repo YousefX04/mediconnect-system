@@ -1,5 +1,7 @@
 ﻿using Hospital.Application.DTOs.MedicalRecord;
 using Hospital.Application.Services.Interfaces;
+using Hospital.Domain.Constants;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hospital.API.Controllers
@@ -16,6 +18,7 @@ namespace Hospital.API.Controllers
         }
 
         [HttpGet("patient/{patientId}")]
+        [Authorize(Roles = Role.Patient)]
         public async Task<IActionResult> GetByPatientId(string patientId)
         {
             try
@@ -44,6 +47,7 @@ namespace Hospital.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = Role.Doctor)]
         public async Task<IActionResult> CreateMedicalRecord(CreateMedicalRecordDto model)
         {
             try
@@ -58,6 +62,7 @@ namespace Hospital.API.Controllers
         }
 
         [HttpPut("{medicalRecordId}")]
+        [Authorize(Roles = Role.Doctor)]
         public async Task<IActionResult> UpdateMedicalRecord(Guid medicalRecordId, UpdateMedicalRecordDto model)
         {
             try
