@@ -63,6 +63,7 @@ namespace Hospital.Application.Services.Implementations
                 ExperienceYears = model.ExperienceYears,
                 ConsultationFee = model.ConsultationFee,
                 SpecializationId = model.SpecializationId,
+                IsActive = true,
                 Biography = ""
             };
 
@@ -70,14 +71,15 @@ namespace Hospital.Application.Services.Implementations
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task DeleteDoctor(string id)
+        public async Task InactiveDoctor(string id)
         {
-            var user = await _userManager.FindByIdAsync(id);
+            var user = await _unitOfWork.Doctors.GetAsync(d => d.UserId == id);
 
             if (user == null)
                 throw new Exception("Doctor not found!");
 
-            await _userManager.DeleteAsync(user);
+            user.IsActive = false;
+
             await _unitOfWork.SaveChangesAsync();
         }
 
@@ -85,7 +87,7 @@ namespace Hospital.Application.Services.Implementations
         {
             var doctors = await _unitOfWork.Doctors
                 .GetAllAsync(
-                filter: d => string.IsNullOrEmpty(specializationName) || d.specialization.Name == specializationName,
+                filter: d => (string.IsNullOrEmpty(specializationName) || d.specialization.Name == specializationName) && d.IsActive == true,
                 selector: d => new GetAllDoctorsDto
                 {
                     Id = d.UserId,
@@ -105,7 +107,7 @@ namespace Hospital.Application.Services.Implementations
         {
             var doctor = await _unitOfWork.Doctors
                 .GetAsync(
-                filter: d => d.UserId == doctorId,
+                filter: d => d.UserId == doctorId && d.IsActive == true,
                 selector: d => new GetDoctorDto
                 {
                     Id = d.UserId,
@@ -136,7 +138,7 @@ namespace Hospital.Application.Services.Implementations
         {
             var doctor = await _unitOfWork.Doctors
                 .GetAsync(
-                filter: d => d.UserId == doctorId,
+                filter: d => d.UserId == doctorId && d.IsActive == true,
                 selector: d => new GetDoctorDetailsDto
                 {
                     Id = d.UserId,
@@ -275,6 +277,18 @@ namespace Hospital.Application.Services.Implementations
             await _unitOfWork.SaveChangesAsync();
 
             return doctor.ProfilePictureUrl;
+        }
+
+        public async Task ActiveDoctor(string id)
+        {
+            var user = await _unitOfWork.Doctors.GetAsync(d => d.UserId == id);
+
+            if (user == null)
+                throw new Exception("Doctor not found!");
+
+            user.IsActive = true;
+
+            await _unitOfWork.SaveChangesAsync();
         }
     }
 }

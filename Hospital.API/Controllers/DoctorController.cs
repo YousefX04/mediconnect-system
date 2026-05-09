@@ -101,13 +101,27 @@ namespace Hospital.API.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteDoctor(string id)
+        [HttpPut("Activate/{id}")]
+        public async Task<IActionResult> ActiveDoctor(string id)
         {
             try
             {
-                await _doctorService.DeleteDoctor(id);
-                return Ok("Doctor deleted successfully.");
+                await _doctorService.ActiveDoctor(id);
+                return Ok("Doctor activated successfully.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { errors = ex.Message });
+            }
+        }
+
+        [HttpPut("Inactivate/{id}")]
+        public async Task<IActionResult> InactiveDoctor(string id)
+        {
+            try
+            {
+                await _doctorService.InactiveDoctor(id);
+                return Ok("Doctor inactivated successfully.");
             }
             catch (Exception ex)
             {
