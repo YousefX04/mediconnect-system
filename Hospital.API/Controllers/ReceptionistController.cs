@@ -58,6 +58,20 @@ namespace Hospital.API.Controllers
             }
         }
 
+        [HttpPut("{receptionistId}/change-doctor/{doctorId}")]
+        public async Task<IActionResult> ChangeDoctor(string receptionistId, string doctorId)
+        {
+            try
+            {
+                await _receptionistService.ChangeDoctor(receptionistId, doctorId);
+                return Ok("Doctor changed successfully for the receptionist.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { errors = ex.Message });
+            }
+        }
+
         [HttpDelete("{receptionistId}")]
         public async Task<IActionResult> DeleteReceptionist(string receptionistId)
         {

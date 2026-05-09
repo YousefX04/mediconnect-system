@@ -22,6 +22,18 @@ namespace Hospital.Application.Services.Implementations
             _updateReceptionistValidator = updateReceptionistValidator;
         }
 
+        public async Task ChangeDoctor(string receptionistId, string doctorId)
+        {
+            var receptionist = await _unitOfWork.Receptionists.GetAsync(r => r.UserId == receptionistId);
+
+            if (receptionist == null)
+                throw new Exception("Receptionist not found.");
+
+            receptionist.DoctorId = doctorId;
+
+            await _unitOfWork.SaveChangesAsync();
+        }
+
         public async Task CreateReceptionist(CreateReceptionistDto model)
         {
             var result = _createReceptionistValidator.Validate(model);
