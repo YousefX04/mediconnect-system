@@ -14,7 +14,7 @@ namespace Hospital.Application.Services.Interfaces
         Task<List<GetAdminAppointmentsDto>> GetTodayAppointmentsByDoctor(string doctorId);
         Task CompleteAppointmentStatus(string appointmentId);
         Task CancelAppointmentStatus(string appointmentId);
-        Task<int> ExpectedNumber(string doctorId, DateTime appointmentDate);
+        Task<ExpectedAppointmentInfoDto> ExpectedNumber(string doctorId, DateTime appointmentDate);
         Task<List<GetAllAppointmentsDto>> GetAllAppointments();
 
     }
