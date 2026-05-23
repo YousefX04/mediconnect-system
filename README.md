@@ -106,8 +106,7 @@ Infrastructure Layer (EF Core, Identity, External Services)
 
 ERD (Entity Relationship Diagram):
 
-> 📌 **Insert ERD diagram here**
-
+![Alt Text](ERD.png)
 
 ---
 
