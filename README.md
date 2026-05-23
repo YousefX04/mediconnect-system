@@ -87,11 +87,17 @@ Receptionists assist doctors in managing appointments.
 The project follows Clean Architecture:
 
 Presentation Layer (API Controllers)
+
 ↓
+
 Application Layer (Services, DTOs, Business Logic)
+
 ↓
+
 Domain Layer (Entities, Core Models)
+
 ↓
+
 Infrastructure Layer (EF Core, Identity, External Services)
 
 ---
